@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Biglietteria Teatro',
-  description: 'Sistema gestione spettacoli',
+  description: 'Prenotazioni spettacoli Officina Teatrale',
   manifest: '/manifest.json',
   icons: {
     icon: '/icon.png',
