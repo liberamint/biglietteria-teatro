@@ -360,7 +360,11 @@ export default function AdminPage() {
                               <label className="text-xs text-zinc-500">Numero ricevuta</label>
                               <input
                                 type="text"
-                                value={receiptDrafts[booking.id] || ''}
+                               value={
+  receiptDrafts[booking.id] !== undefined
+    ? receiptDrafts[booking.id]
+    : booking.receipt_number || ''
+}
                                 onChange={(e) =>
                                   setReceiptDrafts((prev) => ({
                                     ...prev,
