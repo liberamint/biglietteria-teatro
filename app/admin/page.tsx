@@ -26,6 +26,9 @@ export default function AdminPage() {
   const [serials, setSerials] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [receiptDrafts, setReceiptDrafts] = useState<Record<string, string>>({});
+  const [savingReceiptId, setSavingReceiptId] = useState<string | null>(null);
+  const [saveMessage, setSaveMessage] = useState('');
 
   async function loadData(slug = showSlug) {
     setLoading(true);
@@ -41,7 +44,7 @@ export default function AdminPage() {
       return;
     }
 
-    const { data: bookingsData } = await supabase
+    const { data: bookingsData, error: bookingsError } = await supabase
       .from('bookings')
       .select('*')
       .eq('show_id', show.id)
@@ -53,8 +56,20 @@ export default function AdminPage() {
       .eq('show_id', show.id)
       .order('code', { ascending: true });
 
-    setBookings(bookingsData || []);
+    if (bookingsError) {
+      console.error('Errore caricamento bookings:', bookingsError);
+    }
+
+    const loadedBookings = bookingsData || [];
+    setBookings(loadedBookings);
     setSerials(serialsData || []);
+
+    const nextDrafts: Record<string, string> = {};
+    loadedBookings.forEach((booking: any) => {
+      nextDrafts[booking.id] = booking.receipt_number || '';
+    });
+    setReceiptDrafts(nextDrafts);
+
     setLoading(false);
   }
 
@@ -83,7 +98,11 @@ export default function AdminPage() {
       })
       .eq('id', id);
 
-    if (!error) await loadData();
+    if (!error) {
+      await loadData();
+    } else {
+      console.error('Errore aggiornamento booking:', error);
+    }
   }
 
   async function assignSerial(booking: any, serialCode: string) {
@@ -99,7 +118,11 @@ export default function AdminPage() {
       })
       .eq('id', serial.id);
 
-    if (!error) await loadData();
+    if (!error) {
+      await loadData();
+    } else {
+      console.error('Errore assegnazione seriale:', error);
+    }
   }
 
   async function freeSerial(serialId: string) {
@@ -112,10 +135,19 @@ export default function AdminPage() {
       })
       .eq('id', serialId);
 
-    if (!error) await loadData();
+    if (!error) {
+      await loadData();
+    } else {
+      console.error('Errore liberazione seriale:', error);
+    }
   }
 
-  async function saveReceiptNumber(bookingId: string, value: string) {
+  async function saveReceiptNumber(bookingId: string) {
+    setSaveMessage('');
+    setSavingReceiptId(bookingId);
+
+    const value = receiptDrafts[bookingId] || '';
+
     const { error } = await supabase
       .from('bookings')
       .update({
@@ -124,7 +156,16 @@ export default function AdminPage() {
       })
       .eq('id', bookingId);
 
-    if (!error) await loadData();
+    if (error) {
+      console.error('Errore salvataggio ricevuta:', error);
+      setSaveMessage(`Errore salvataggio ricevuta: ${error.message}`);
+      setSavingReceiptId(null);
+      return;
+    }
+
+    setSaveMessage('Ricevuta salvata correttamente.');
+    setSavingReceiptId(null);
+    await loadData();
   }
 
   function isExpired(booking: any) {
@@ -219,6 +260,12 @@ export default function AdminPage() {
             </form>
           </div>
 
+          {saveMessage ? (
+            <div className="rounded-xl border bg-zinc-50 px-4 py-3 text-sm text-zinc-700">
+              {saveMessage}
+            </div>
+          ) : null}
+
           <Card>
             <CardContent>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -304,18 +351,34 @@ export default function AdminPage() {
                             Biglietti richiesti: {booking.ticket_count}
                           </div>
                           <div className="text-sm text-zinc-600">
-                            Ricevuta: {booking.receipt_number || '—'}
+                            Ricevuta attuale: {booking.receipt_number || '—'}
                           </div>
 
-                          <div>
-                            <label className="text-xs text-zinc-500">Numero ricevuta</label>
-                            <input
-                              type="text"
-                              defaultValue={booking.receipt_number || ''}
-                              onBlur={(e) => saveReceiptNumber(booking.id, e.target.value)}
-                              placeholder="Inserisci seriale ricevuta"
-                              className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
-                            />
+                          <div className="flex flex-col gap-2 pt-1 md:flex-row md:items-end">
+                            <div className="flex-1">
+                              <label className="text-xs text-zinc-500">Numero ricevuta</label>
+                              <input
+                                type="text"
+                                value={receiptDrafts[booking.id] || ''}
+                                onChange={(e) =>
+                                  setReceiptDrafts((prev) => ({
+                                    ...prev,
+                                    [booking.id]: e.target.value,
+                                  }))
+                                }
+                                placeholder="Inserisci seriale ricevuta"
+                                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+                              />
+                            </div>
+
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => saveReceiptNumber(booking.id)}
+                              disabled={savingReceiptId === booking.id}
+                            >
+                              {savingReceiptId === booking.id ? 'Salvataggio...' : 'Salva ricevuta'}
+                            </Button>
                           </div>
 
                           <div className="whitespace-pre-line text-sm text-zinc-600">
