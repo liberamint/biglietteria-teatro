@@ -13,10 +13,12 @@
     "@supabase/supabase-js": "latest",
     "@tailwindcss/postcss": "^4.2.2",
     "clsx": "latest",
+    "file-saver": "^2.0.5",
     "lucide-react": "latest",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "latest",

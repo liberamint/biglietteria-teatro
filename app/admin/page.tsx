@@ -1,5 +1,7 @@
 'use client';
 
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import { useEffect, useMemo, useState } from 'react';
 import { createClient } from '@/lib/supabase-browser';
 import { SHOWS } from '@/lib/config';
@@ -79,6 +81,48 @@ export default function AdminPage() {
 
     if (!error) await loadData();
   }
+function exportPrenotazioniExcel() {
+  const rows = filtered.map((booking) => {
+    const spettacolo = SHOWS.find((s) => s.slug === showSlug)?.name || showSlug;
+    const assigned = serials
+      .filter((s) => s.booking_id === booking.id)
+      .map((s) => s.code)
+      .join(', ');
+
+    return {
+      Spettacolo: spettacolo,
+      Nome: booking.requester_name,
+      Telefono: booking.phone,
+      Email: booking.email || '',
+      Biglietti: booking.ticket_count,
+      Partecipanti: booking.participant_names,
+      Note: booking.notes || '',
+      Confermato: booking.confirmed ? 'Sì' : 'No',
+      Pagato: booking.paid ? 'Sì' : 'No',
+      Ingresso: booking.checked_in ? 'Sì' : 'No',
+      Seriali: assigned,
+      Aggiornato: formatDateTime(booking.updated_at),
+    };
+  });
+
+  const worksheet = XLSX.utils.json_to_sheet(rows);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Prenotazioni');
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array',
+  });
+
+  const file = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+  });
+
+  const nomeSpettacolo = SHOWS.find((s) => s.slug === showSlug)?.name || 'spettacolo';
+  const safeName = nomeSpettacolo.replace(/\s+/g, '_').toLowerCase();
+
+  saveAs(file, `prenotazioni_${safeName}.xlsx`);
+}
 
   const stats = {
     liberi: serials.filter((s) => s.status === 'LIBERO').length,
@@ -115,14 +159,27 @@ export default function AdminPage() {
           <Card>
             <CardHeader><CardTitle>Gestione spettacolo</CardTitle></CardHeader>
             <CardContent>
-              <div className="mb-6 flex flex-col gap-3 md:flex-row">
-                <select className="w-full rounded-2xl border bg-white px-4 py-3 text-sm md:w-72" value={showSlug} onChange={(e) => setShowSlug(e.target.value)}>
-                  {SHOWS.map((show) => (
-                    <option key={show.slug} value={show.slug}>{show.name}</option>
-                  ))}
-                </select>
-                <Input placeholder="Cerca nome o telefono" value={search} onChange={(e) => setSearch(e.target.value)} />
-              </div>
+             <div className="mb-6 flex flex-col gap-3 md:flex-row">
+  <select
+    className="w-full rounded-2xl border bg-white px-4 py-3 text-sm md:w-72"
+    value={showSlug}
+    onChange={(e) => setShowSlug(e.target.value)}
+  >
+    {SHOWS.map((show) => (
+      <option key={show.slug} value={show.slug}>{show.name}</option>
+    ))}
+  </select>
+
+  <Input
+    placeholder="Cerca nome o telefono"
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+  />
+
+  <Button type="button" variant="outline" onClick={exportPrenotazioniExcel}>
+    Esporta Excel
+  </Button>
+</div>
 
               {loading ? <p className="text-sm text-zinc-500">Caricamento...</p> : null}
 
@@ -141,6 +198,7 @@ export default function AdminPage() {
                             {booking.checked_in ? <Badge>Entrato</Badge> : null}
                           </div>
                           <div className="text-sm text-zinc-600">📞 {booking.phone}</div>
+			  <div className="text-sm text-zinc-600">✉️ {booking.email || '-'}</div>
                           <div className="text-sm text-zinc-600">Biglietti richiesti: {booking.ticket_count}</div>
                           <div className="whitespace-pre-line text-sm text-zinc-600">{booking.participant_names}</div>
                           <div className="text-xs text-zinc-500">Aggiornato: {formatDateTime(booking.updated_at)}</div>
