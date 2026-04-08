@@ -138,8 +138,12 @@ function exportPrenotazioniExcel() {
         <div className="space-y-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Area amministratore - export attivo</h1>
-              <p className="text-sm text-zinc-600">Pagamento e seriali sono gestiti solo qui.</p>
+              <h1 className="text-3xl font-bold tracking-tight">
+    Area amministratore - export attivo 🎭
+  </h1>
+  <p className="text-sm text-zinc-600">
+    Pagamento e seriali sono gestiti solo qui.
+  </p>
             </div>
             <form action={logout}>
               <Button type="submit" variant="outline">Esci</Button>
