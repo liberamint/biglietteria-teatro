@@ -350,8 +350,9 @@ export default function AdminPage() {
                           <div className="text-sm text-zinc-600">
                             Biglietti richiesti: {booking.ticket_count}
                           </div>
-                          <div className="text-sm text-zinc-600">
-                            Ricevuta attuale: {booking.receipt_number || '—'}
+                          <div className="rounded-lg bg-zinc-50 px-3 py-2 text-sm text-zinc-700">
+  <span className="font-medium">Ricevuta attuale:</span> {booking.receipt_number || '—'}
+</div>
                           </div>
 
                           <div className="flex flex-col gap-2 pt-1 md:flex-row md:items-end">
