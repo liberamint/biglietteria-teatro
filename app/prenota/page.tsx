@@ -10,6 +10,7 @@ export default function PrenotaPage() {
   const [showSlug, setShowSlug] = useState<string>(SHOWS[0].slug);
   const [requesterName, setRequesterName] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [ticketCount, setTicketCount] = useState(1);
   const [participantNames, setParticipantNames] = useState('');
   const [notes, setNotes] = useState('');
@@ -17,66 +18,59 @@ export default function PrenotaPage() {
   const [busy, setBusy] = useState(false);
 
   async function submitBooking() {
-    setBusy(true);
-    setMessage('');
-   const { data: show, error: showError } = await supabase
-  .from('shows')
-  .select('id, name, slug')
-  .eq('slug', showSlug)
-  .maybeSingle();
+  setBusy(true);
+  setMessage('');
 
-console.log("slug cercato:", showSlug);
-console.log("risultato:", show);
-console.log("errore spettacolo:", showError);
+  const { data: show, error: showError } = await supabase
+    .from('shows')
+    .select('id, name, slug')
+    .eq('slug', showSlug)
+    .maybeSingle();
 
-if (showError) {
-  setMessage(`Errore spettacolo: ${showError.message}`);
-  return;
-}
+  console.log("slug cercato:", showSlug);
+  console.log("risultato:", show);
+  console.log("errore spettacolo:", showError);
 
-if (!show) {
-  setMessage(`Spettacolo non trovato: ${showSlug}`);
-  return;
-}
-
-console.log("slug cercato:", showSlug);
-console.log("risultato:", show);
-console.log("errore spettacolo:", showError);
-if (!show) {
-  setMessage(`Spettacolo non trovato: ${showSlug}`);
-  return;
-}
-    if (!show) {
-      setMessage('Spettacolo non trovato.');
-      setBusy(false);
-      return;
-    }
-
-   const { error: insertError } = await supabase.from('bookings').insert({
-      show_id: show.id,
-      requester_name: requesterName,
-      phone,
-      ticket_count: ticketCount,
-      participant_names: participantNames,
-      notes,
-      confirmed: false,
-      paid: false,
-      checked_in: false,
-    });
-
-    if (insertError) {
-  setMessage(`Errore nel salvataggio della prenotazione: ${insertError.message}`);
-  return;
-    }
-
-    setMessage('Richiesta inviata. Pagamento e seriali saranno confermati solo dall\'organizzazione.');
-    setRequesterName('');
-    setPhone('');
-    setTicketCount(1);
-    setParticipantNames('');
-    setNotes('');
+  if (showError) {
+    setMessage(`Errore spettacolo: ${showError.message}`);
     setBusy(false);
+    return;
   }
+
+  if (!show) {
+    setMessage(`Spettacolo non trovato: ${showSlug}`);
+    setBusy(false);
+    return;
+  }
+
+  const { error: insertError } = await supabase.from('bookings').insert({
+    show_id: show.id,
+    requester_name: requesterName,
+    phone,
+    email,
+    ticket_count: ticketCount,
+    participant_names: participantNames,
+    notes,
+    confirmed: false,
+    paid: false,
+    checked_in: false,
+  });
+
+  if (insertError) {
+    setMessage(`Errore nel salvataggio della prenotazione: ${insertError.message}`);
+    setBusy(false);
+    return;
+  }
+
+  setMessage("Richiesta inviata. Pagamento e seriali saranno confermati solo dall'organizzazione.");
+  setRequesterName('');
+  setPhone('');
+  setEmail('');
+  setTicketCount(1);
+  setParticipantNames('');
+  setNotes('');
+  setBusy(false);
+}
 
   return (
     <PageShell>
@@ -102,13 +96,29 @@ if (!show) {
                 <Input value={phone} onChange={(e) => setPhone(e.target.value)} required />
               </div>
               <div>
-                <label className="text-sm font-medium">Numero biglietti</label>
-                <Input type="number" min={1} max={12} value={ticketCount} onChange={(e) => setTicketCount(Number(e.target.value))} />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Nomi partecipanti</label>
-                <Textarea rows={5} value={participantNames} onChange={(e) => setParticipantNames(e.target.value)} placeholder="Uno per riga, se possibile" />
-              </div>
+  <label className="text-sm font-medium">Numero biglietti</label>
+  <Input type="number" min={1} max={12} value={ticketCount} onChange={(e) => setTicketCount(Number(e.target.value))} />
+</div>
+
+<div>
+  <label className="text-sm font-medium">Email</label>
+  <Input
+    type="email"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    required
+  />
+</div>
+
+<div>
+  <label className="text-sm font-medium">Nomi partecipanti</label>
+  <Textarea
+    rows={5}
+    value={participantNames}
+    onChange={(e) => setParticipantNames(e.target.value)}
+    placeholder="Uno per riga, se possibile"
+  />
+</div>
               <div>
                 <label className="text-sm font-medium">Note</label>
                 <Textarea rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} />
