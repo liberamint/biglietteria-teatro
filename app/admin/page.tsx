@@ -22,7 +22,6 @@ import { logout } from '../login/actions';
 export default function AdminPage() {
   const supabase = createClient();
   const [showSlug, setShowSlug] = useState<string>(SHOWS[0].slug);
-  const [showId, setShowId] = useState<string | null>(null);
   const [bookings, setBookings] = useState<any[]>([]);
   const [serials, setSerials] = useState<any[]>([]);
   const [search, setSearch] = useState('');
@@ -41,8 +40,6 @@ export default function AdminPage() {
       setLoading(false);
       return;
     }
-
-    setShowId(show.id);
 
     const { data: bookingsData } = await supabase
       .from('bookings')
@@ -67,7 +64,9 @@ export default function AdminPage() {
 
   const filtered = useMemo(() => {
     return bookings.filter((b) =>
-      `${b.requester_name} ${b.phone} ${b.email || ''}`.toLowerCase().includes(search.toLowerCase())
+      `${b.requester_name} ${b.phone} ${b.email || ''} ${b.receipt_number || ''}`
+        .toLowerCase()
+        .includes(search.toLowerCase())
     );
   }, [bookings, search]);
 
@@ -116,6 +115,18 @@ export default function AdminPage() {
     if (!error) await loadData();
   }
 
+  async function saveReceiptNumber(bookingId: string, value: string) {
+    const { error } = await supabase
+      .from('bookings')
+      .update({
+        receipt_number: value.trim() || null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', bookingId);
+
+    if (!error) await loadData();
+  }
+
   function isExpired(booking: any) {
     if (booking.paid) return false;
     if (!booking.created_at) return false;
@@ -140,6 +151,7 @@ export default function AdminPage() {
         Nome: booking.requester_name,
         Telefono: booking.phone,
         Email: booking.email || '',
+        Ricevuta: booking.receipt_number || '',
         Biglietti: booking.ticket_count,
         Partecipanti: booking.participant_names,
         Note: booking.notes || '',
@@ -193,10 +205,10 @@ export default function AdminPage() {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">
-                Area amministratore - export attivo 🎭
+                Area amministratore 🎭
               </h1>
               <p className="text-sm text-zinc-600">
-                Pagamento e seriali sono gestiti solo qui.
+                Pagamento, seriali e ricevuta sono gestiti solo qui.
               </p>
             </div>
 
@@ -253,7 +265,7 @@ export default function AdminPage() {
                 </select>
 
                 <Input
-                  placeholder="Cerca nome o telefono"
+                  placeholder="Cerca nome, telefono, email o ricevuta"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -291,12 +303,29 @@ export default function AdminPage() {
                           <div className="text-sm text-zinc-600">
                             Biglietti richiesti: {booking.ticket_count}
                           </div>
+                          <div className="text-sm text-zinc-600">
+                            Ricevuta: {booking.receipt_number || '—'}
+                          </div>
+
+                          <div>
+                            <label className="text-xs text-zinc-500">Numero ricevuta</label>
+                            <input
+                              type="text"
+                              defaultValue={booking.receipt_number || ''}
+                              onBlur={(e) => saveReceiptNumber(booking.id, e.target.value)}
+                              placeholder="Inserisci seriale ricevuta"
+                              className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+                            />
+                          </div>
+
                           <div className="whitespace-pre-line text-sm text-zinc-600">
                             {booking.participant_names}
                           </div>
+
                           <div className="text-xs text-zinc-500">
                             Aggiornato: {formatDateTime(booking.updated_at)}
                           </div>
+
                           <div className="text-xs text-zinc-500">
                             Scadenza pagamento:{' '}
                             {booking.created_at
