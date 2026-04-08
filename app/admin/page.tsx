@@ -6,7 +6,17 @@ import { useEffect, useMemo, useState } from 'react';
 import { createClient } from '@/lib/supabase-browser';
 import { SHOWS } from '@/lib/config';
 import { formatDateTime } from '@/lib/utils';
-import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Container, Input, PageShell } from '@/components/ui';
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Container,
+  Input,
+  PageShell,
+} from '@/components/ui';
 import { logout } from '../login/actions';
 
 export default function AdminPage() {
@@ -20,11 +30,18 @@ export default function AdminPage() {
 
   async function loadData(slug = showSlug) {
     setLoading(true);
-    const { data: show } = await supabase.from('shows').select('id').eq('slug', slug).single();
+
+    const { data: show } = await supabase
+      .from('shows')
+      .select('id')
+      .eq('slug', slug)
+      .single();
+
     if (!show) {
       setLoading(false);
       return;
     }
+
     setShowId(show.id);
 
     const { data: bookingsData } = await supabase
@@ -50,12 +67,23 @@ export default function AdminPage() {
 
   const filtered = useMemo(() => {
     return bookings.filter((b) =>
-      `${b.requester_name} ${b.phone}`.toLowerCase().includes(search.toLowerCase())
+      `${b.requester_name} ${b.phone} ${b.email || ''}`.toLowerCase().includes(search.toLowerCase())
     );
   }, [bookings, search]);
 
-  async function toggleBookingField(id: string, field: 'confirmed' | 'paid' | 'checked_in', value: boolean) {
-    const { error } = await supabase.from('bookings').update({ [field]: value, updated_at: new Date().toISOString() }).eq('id', id);
+  async function toggleBookingField(
+    id: string,
+    field: 'confirmed' | 'paid' | 'checked_in',
+    value: boolean
+  ) {
+    const { error } = await supabase
+      .from('bookings')
+      .update({
+        [field]: value,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id);
+
     if (!error) await loadData();
   }
 
@@ -63,67 +91,93 @@ export default function AdminPage() {
     const serial = serials.find((s) => s.code === serialCode && s.status === 'LIBERO');
     if (!serial) return;
 
-    const { error } = await supabase.from('serials').update({
-      status: booking.paid ? 'PAGATO' : 'PRENOTATO',
-      assigned_to: booking.requester_name,
-      booking_id: booking.id,
-    }).eq('id', serial.id);
+    const { error } = await supabase
+      .from('serials')
+      .update({
+        status: booking.paid ? 'PAGATO' : 'PRENOTATO',
+        assigned_to: booking.requester_name,
+        booking_id: booking.id,
+      })
+      .eq('id', serial.id);
 
     if (!error) await loadData();
   }
 
   async function freeSerial(serialId: string) {
-    const { error } = await supabase.from('serials').update({
-      status: 'LIBERO',
-      assigned_to: null,
-      booking_id: null,
-    }).eq('id', serialId);
+    const { error } = await supabase
+      .from('serials')
+      .update({
+        status: 'LIBERO',
+        assigned_to: null,
+        booking_id: null,
+      })
+      .eq('id', serialId);
 
     if (!error) await loadData();
   }
-// export excel prenotazioni
-function exportPrenotazioniExcel() {
-  const rows = filtered.map((booking) => {
-    const spettacolo = SHOWS.find((s) => s.slug === showSlug)?.name || showSlug;
-    const assigned = serials
-      .filter((s) => s.booking_id === booking.id)
-      .map((s) => s.code)
-      .join(', ');
 
-    return {
-      Spettacolo: spettacolo,
-      Nome: booking.requester_name,
-      Telefono: booking.phone,
-      Email: booking.email || '',
-      Biglietti: booking.ticket_count,
-      Partecipanti: booking.participant_names,
-      Note: booking.notes || '',
-      Confermato: booking.confirmed ? 'Sì' : 'No',
-      Pagato: booking.paid ? 'Sì' : 'No',
-      Ingresso: booking.checked_in ? 'Sì' : 'No',
-      Seriali: assigned,
-      Aggiornato: formatDateTime(booking.updated_at),
-    };
-  });
+  function isExpired(booking: any) {
+    if (booking.paid) return false;
+    if (!booking.created_at) return false;
 
-  const worksheet = XLSX.utils.json_to_sheet(rows);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Prenotazioni');
+    const created = new Date(booking.created_at).getTime();
+    const now = Date.now();
+    const tenDays = 10 * 24 * 60 * 60 * 1000;
 
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: 'xlsx',
-    type: 'array',
-  });
+    return now - created > tenDays;
+  }
 
-  const file = new Blob([excelBuffer], {
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
-  });
+  function exportPrenotazioniExcel() {
+    const rows = filtered.map((booking) => {
+      const spettacolo = SHOWS.find((s) => s.slug === showSlug)?.name || showSlug;
+      const assigned = serials
+        .filter((s) => s.booking_id === booking.id)
+        .map((s) => s.code)
+        .join(', ');
 
-  const nomeSpettacolo = SHOWS.find((s) => s.slug === showSlug)?.name || 'spettacolo';
-  const safeName = nomeSpettacolo.replace(/\s+/g, '_').toLowerCase();
+      return {
+        Spettacolo: spettacolo,
+        Nome: booking.requester_name,
+        Telefono: booking.phone,
+        Email: booking.email || '',
+        Biglietti: booking.ticket_count,
+        Partecipanti: booking.participant_names,
+        Note: booking.notes || '',
+        Confermato: booking.confirmed ? 'Sì' : 'No',
+        Pagato: booking.paid ? 'Sì' : 'No',
+        Ingresso: booking.checked_in ? 'Sì' : 'No',
+        Seriali: assigned,
+        Aggiornato: formatDateTime(booking.updated_at),
+        ScadenzaPagamento: booking.created_at
+          ? new Date(
+              new Date(booking.created_at).getTime() + 10 * 24 * 60 * 60 * 1000
+            ).toLocaleDateString('it-IT', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            })
+          : '-',
+      };
+    });
 
-  saveAs(file, `prenotazioni_${safeName}.xlsx`);
-}
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Prenotazioni');
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+
+    const file = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+    });
+
+    const nomeSpettacolo = SHOWS.find((s) => s.slug === showSlug)?.name || 'spettacolo';
+    const safeName = nomeSpettacolo.replace(/\s+/g, '_').toLowerCase();
+
+    saveAs(file, `prenotazioni_${safeName}.xlsx`);
+  }
 
   const stats = {
     liberi: serials.filter((s) => s.status === 'LIBERO').length,
@@ -139,52 +193,75 @@ function exportPrenotazioniExcel() {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">
-    Area amministratore - export attivo 🎭
-  </h1>
-  <p className="text-sm text-zinc-600">
-    Pagamento e seriali sono gestiti solo qui.
-  </p>
+                Area amministratore - export attivo 🎭
+              </h1>
+              <p className="text-sm text-zinc-600">
+                Pagamento e seriali sono gestiti solo qui.
+              </p>
             </div>
+
             <form action={logout}>
-              <Button type="submit" variant="outline">Esci</Button>
+              <Button type="submit" variant="outline">
+                Esci
+              </Button>
             </form>
           </div>
 
           <Card>
             <CardContent>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                <div className="rounded-2xl border bg-zinc-50 p-4"><div className="text-xs text-zinc-500">Posti liberi</div><div className="mt-1 text-2xl font-bold">{stats.liberi}</div></div>
-                <div className="rounded-2xl border bg-zinc-50 p-4"><div className="text-xs text-zinc-500">Pagati</div><div className="mt-1 text-2xl font-bold">{stats.pagati}</div></div>
-                <div className="rounded-2xl border bg-zinc-50 p-4"><div className="text-xs text-zinc-500">Prenotati</div><div className="mt-1 text-2xl font-bold">{stats.prenotati}</div></div>
-                <div className="rounded-2xl border bg-zinc-50 p-4"><div className="text-xs text-zinc-500">Ingressi</div><div className="mt-1 text-2xl font-bold">{stats.ingressi}</div></div>
+                <div className="rounded-2xl border bg-zinc-50 p-4">
+                  <div className="text-xs text-zinc-500">Posti liberi</div>
+                  <div className="mt-1 text-2xl font-bold">{stats.liberi}</div>
+                </div>
+
+                <div className="rounded-2xl border bg-zinc-50 p-4">
+                  <div className="text-xs text-zinc-500">Pagati</div>
+                  <div className="mt-1 text-2xl font-bold">{stats.pagati}</div>
+                </div>
+
+                <div className="rounded-2xl border bg-zinc-50 p-4">
+                  <div className="text-xs text-zinc-500">Prenotati</div>
+                  <div className="mt-1 text-2xl font-bold">{stats.prenotati}</div>
+                </div>
+
+                <div className="rounded-2xl border bg-zinc-50 p-4">
+                  <div className="text-xs text-zinc-500">Ingressi</div>
+                  <div className="mt-1 text-2xl font-bold">{stats.ingressi}</div>
+                </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader><CardTitle>Gestione spettacolo</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle>Gestione spettacolo</CardTitle>
+            </CardHeader>
+
             <CardContent>
-             <div className="mb-6 flex flex-col gap-3 md:flex-row">
-  <select
-    className="w-full rounded-2xl border bg-white px-4 py-3 text-sm md:w-72"
-    value={showSlug}
-    onChange={(e) => setShowSlug(e.target.value)}
-  >
-    {SHOWS.map((show) => (
-      <option key={show.slug} value={show.slug}>{show.name}</option>
-    ))}
-  </select>
+              <div className="mb-6 flex flex-col gap-3 md:flex-row">
+                <select
+                  className="w-full rounded-2xl border bg-white px-4 py-3 text-sm md:w-72"
+                  value={showSlug}
+                  onChange={(e) => setShowSlug(e.target.value)}
+                >
+                  {SHOWS.map((show) => (
+                    <option key={show.slug} value={show.slug}>
+                      {show.name}
+                    </option>
+                  ))}
+                </select>
 
-  <Input
-    placeholder="Cerca nome o telefono"
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-  />
+                <Input
+                  placeholder="Cerca nome o telefono"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
 
-  <Button type="button" variant="outline" onClick={exportPrenotazioniExcel}>
-    Esporta Excel
-  </Button>
-</div>
+                <Button type="button" variant="outline" onClick={exportPrenotazioniExcel}>
+                  Esporta Excel
+                </Button>
+              </div>
 
               {loading ? <p className="text-sm text-zinc-500">Caricamento...</p> : null}
 
@@ -192,6 +269,7 @@ function exportPrenotazioniExcel() {
                 {filtered.map((booking) => {
                   const assigned = serials.filter((s) => s.booking_id === booking.id);
                   const available = serials.filter((s) => s.status === 'LIBERO').slice(0, 12);
+
                   return (
                     <div key={booking.id} className="rounded-2xl border bg-white p-4 space-y-4">
                       <div className="flex flex-col gap-3 lg:flex-row lg:justify-between">
@@ -201,37 +279,104 @@ function exportPrenotazioniExcel() {
                             {booking.confirmed ? <Badge>Confermato</Badge> : null}
                             {booking.paid ? <Badge>Pagato</Badge> : null}
                             {booking.checked_in ? <Badge>Entrato</Badge> : null}
+                            {isExpired(booking) ? (
+                              <span className="rounded-full border border-red-300 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
+                                Scaduta
+                              </span>
+                            ) : null}
                           </div>
+
                           <div className="text-sm text-zinc-600">📞 {booking.phone}</div>
-			  <div className="text-sm text-zinc-600">✉️ {booking.email || '-'}</div>
-                          <div className="text-sm text-zinc-600">Biglietti richiesti: {booking.ticket_count}</div>
-                          <div className="whitespace-pre-line text-sm text-zinc-600">{booking.participant_names}</div>
-                          <div className="text-xs text-zinc-500">Aggiornato: {formatDateTime(booking.updated_at)}</div>
+                          <div className="text-sm text-zinc-600">✉️ {booking.email || '-'}</div>
+                          <div className="text-sm text-zinc-600">
+                            Biglietti richiesti: {booking.ticket_count}
+                          </div>
+                          <div className="whitespace-pre-line text-sm text-zinc-600">
+                            {booking.participant_names}
+                          </div>
+                          <div className="text-xs text-zinc-500">
+                            Aggiornato: {formatDateTime(booking.updated_at)}
+                          </div>
+                          <div className="text-xs text-zinc-500">
+                            Scadenza pagamento:{' '}
+                            {booking.created_at
+                              ? new Date(
+                                  new Date(booking.created_at).getTime() +
+                                    10 * 24 * 60 * 60 * 1000
+                                ).toLocaleDateString('it-IT', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric',
+                                })
+                              : '-'}
+                          </div>
                         </div>
+
                         <div className="flex flex-wrap gap-2">
-                          <Button variant={booking.confirmed ? 'secondary' : 'outline'} onClick={() => toggleBookingField(booking.id, 'confirmed', !booking.confirmed)}>{booking.confirmed ? 'Confermato' : 'Conferma'}</Button>
-                          <Button variant={booking.paid ? 'secondary' : 'outline'} onClick={() => toggleBookingField(booking.id, 'paid', !booking.paid)}>{booking.paid ? 'Pagato' : 'Segna pagato'}</Button>
-                          <Button variant={booking.checked_in ? 'secondary' : 'outline'} onClick={() => toggleBookingField(booking.id, 'checked_in', !booking.checked_in)}>{booking.checked_in ? 'Entrato' : 'Ingresso'}</Button>
+                          <Button
+                            variant={booking.confirmed ? 'secondary' : 'outline'}
+                            onClick={() =>
+                              toggleBookingField(booking.id, 'confirmed', !booking.confirmed)
+                            }
+                          >
+                            {booking.confirmed ? 'Confermato' : 'Conferma'}
+                          </Button>
+
+                          <Button
+                            variant={booking.paid ? 'secondary' : 'outline'}
+                            onClick={() => toggleBookingField(booking.id, 'paid', !booking.paid)}
+                          >
+                            {booking.paid ? 'Pagato' : 'Segna pagato'}
+                          </Button>
+
+                          <Button
+                            variant={booking.checked_in ? 'secondary' : 'outline'}
+                            onClick={() =>
+                              toggleBookingField(booking.id, 'checked_in', !booking.checked_in)
+                            }
+                          >
+                            {booking.checked_in ? 'Entrato' : 'Ingresso'}
+                          </Button>
                         </div>
                       </div>
 
                       <div className="rounded-2xl border bg-zinc-50 p-4 space-y-3">
                         <div className="flex items-center justify-between gap-3">
                           <div className="font-medium">Seriali assegnati</div>
-                          <div className="text-sm text-zinc-600">{assigned.length} / {booking.ticket_count}</div>
+                          <div className="text-sm text-zinc-600">
+                            {assigned.length} / {booking.ticket_count}
+                          </div>
                         </div>
+
                         <div className="flex flex-wrap gap-2">
-                          {assigned.length === 0 ? <span className="text-sm text-zinc-500">Nessun seriale assegnato.</span> : null}
+                          {assigned.length === 0 ? (
+                            <span className="text-sm text-zinc-500">
+                              Nessun seriale assegnato.
+                            </span>
+                          ) : null}
+
                           {assigned.map((serial) => (
-                            <button key={serial.id} type="button" className="rounded-full border bg-white px-3 py-1 text-sm" onClick={() => freeSerial(serial.id)}>
+                            <button
+                              key={serial.id}
+                              type="button"
+                              className="rounded-full border bg-white px-3 py-1 text-sm"
+                              onClick={() => freeSerial(serial.id)}
+                            >
                               {serial.code}
                             </button>
                           ))}
                         </div>
+
                         {assigned.length < booking.ticket_count ? (
                           <div className="flex flex-wrap gap-2">
                             {available.map((serial) => (
-                              <Button key={serial.id} variant="outline" onClick={() => assignSerial(booking, serial.code)}>{serial.code}</Button>
+                              <Button
+                                key={serial.id}
+                                variant="outline"
+                                onClick={() => assignSerial(booking, serial.code)}
+                              >
+                                {serial.code}
+                              </Button>
                             ))}
                           </div>
                         ) : null}
@@ -247,4 +392,3 @@ function exportPrenotazioniExcel() {
     </PageShell>
   );
 }
-// trigger deploy 
