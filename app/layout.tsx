@@ -15,7 +15,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#111111',
+  maximumScale: 1,
+  themeColor: '#5b1820',
 };
 
 export default function RootLayout({
@@ -25,25 +26,30 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="it">
-      <body className="bg-white text-zinc-900">
+      <body className="min-h-screen bg-[linear-gradient(180deg,#f9f4ec_0%,#f5ede2_100%)] text-zinc-900 antialiased">
         <div className="min-h-screen">
-          <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur">
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-              <div className="text-sm font-semibold sm:text-base">
-                Biglietteria Teatro
+          <header className="sticky top-0 z-50 border-b border-[#d8c8b1] bg-[#f8f1e7]/95 backdrop-blur">
+            <div className="mx-auto flex max-w-6xl items-center justify-between px-3 py-3 sm:px-5">
+              <div className="min-w-0">
+                <div className="text-[11px] uppercase tracking-[0.28em] text-[#8d6b57]">
+                  Officina Teatrale
+                </div>
+                <div className="truncate text-sm font-semibold text-[#5b1820] sm:text-base">
+                  Biglietteria Teatro
+                </div>
               </div>
 
               <nav className="flex items-center gap-2">
                 <Link
                   href="/prenota"
-                  className="rounded-xl border px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+                  className="rounded-full border border-[#c6ab8a] bg-white/80 px-3 py-2 text-sm font-medium text-[#5b1820] shadow-sm transition hover:bg-white"
                 >
                   Prenota
                 </Link>
 
                 <Link
                   href="/admin"
-                  className="rounded-xl border px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+                  className="rounded-full border border-[#5b1820] bg-[#5b1820] px-3 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#4a141a]"
                 >
                   Admin
                 </Link>
@@ -51,7 +57,7 @@ export default function RootLayout({
             </div>
           </header>
 
-          <main>{children}</main>
+          <main className="pb-10">{children}</main>
         </div>
       </body>
     </html>
