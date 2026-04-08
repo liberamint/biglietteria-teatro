@@ -86,6 +86,16 @@ export default function PrenotaPage() {
                     <option key={show.slug} value={show.slug}>{show.name}</option>
                   ))}
                 </select>
+<p className="text-sm text-zinc-600 mt-2">
+  {new Date(SHOWS.find(s => s.slug === showSlug)?.datetime || '')
+    .toLocaleString('it-IT', {
+      weekday: 'long',
+      day: '2-digit',
+      month: 'long',
+      hour: '2-digit',
+      minute: '2-digit'
+    })}
+</p>
               </div>
               <div>
                 <label className="text-sm font-medium">Nome e cognome</label>
