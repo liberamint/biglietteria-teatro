@@ -9,7 +9,7 @@ import { logout } from '../login/actions';
 
 export default function AdminPage() {
   const supabase = createClient();
-  const [showSlug, setShowSlug] = useState(SHOWS[0].slug);
+  const [showSlug, setShowSlug] = useState<string>(SHOWS[0].slug);
   const [showId, setShowId] = useState<string | null>(null);
   const [bookings, setBookings] = useState<any[]>([]);
   const [serials, setSerials] = useState<any[]>([]);
