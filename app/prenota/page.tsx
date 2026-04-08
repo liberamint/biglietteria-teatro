@@ -7,7 +7,7 @@ import { Container, PageShell, Card, CardHeader, CardTitle, CardContent, Input, 
 
 export default function PrenotaPage() {
   const supabase = createClient();
-  const [showSlug, setShowSlug] = useState(SHOWS[0].slug);
+  const [showSlug, setShowSlug] = useState<string>(SHOWS[0].slug);
   const [requesterName, setRequesterName] = useState('');
   const [phone, setPhone] = useState('');
   const [ticketCount, setTicketCount] = useState(1);
