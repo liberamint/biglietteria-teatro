@@ -106,25 +106,29 @@ export default function PrenotaPage() {
                 </select>
 
                 <p className="mt-2 text-sm text-zinc-600">
-                  📅{' '}
-                  {new Date(selectedShow?.datetime || '').toLocaleDateString('it-IT', {
-                    weekday: 'long',
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric',
-                  })}{' '}
-                  • 🕒 ore{' '}
-                  {new Date(selectedShow?.datetime || '').toLocaleTimeString('it-IT', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                  <br />
-                  💶 Intero: €{selectedShow?.price_full} • Ridotto: €{selectedShow?.price_reduced}
-                  <br />
-                  <span className="text-xs text-zinc-500">
-                    Ridotto valido per bambini fino a 6 anni o per chi assiste a più spettacoli.
-                  </span>
-                </p>
+  📅{' '}
+  {new Date(selectedShow?.datetime || '').toLocaleDateString('it-IT', {
+    weekday: 'long',
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  })}{' '}
+  • 🕒 ore{' '}
+  {new Date(selectedShow?.datetime || '').toLocaleTimeString('it-IT', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })}
+  <br />
+  💶 Intero: €{selectedShow?.price_full} • Ridotto: €{selectedShow?.price_reduced}
+  <br />
+  <span className="text-xs text-zinc-500">
+    Ridotto valido per bambini fino a 6 anni o per chi assiste a più spettacoli.
+  </span>
+  <br />
+  <span className="text-xs text-red-600 font-medium">
+    ⚠️ Da pagare in Officina entro 10 giorni dalla prenotazione, pena decadimento della stessa.
+  </span>
+</p>
               </div>
 
               <div>
