@@ -33,6 +33,7 @@ export default function AdminPage() {
 
   const selectedShow = SHOWS.find((s) => s.slug === showSlug);
   const prezzoIntero = Number(selectedShow?.price_full || 10);
+  const prezzoRidotto = Number(selectedShow?.price_reduced || 8);
 
   async function loadData(slug = showSlug) {
     setLoading(true);
@@ -191,6 +192,26 @@ export default function AdminPage() {
     return now - created > tenDays;
   }
 
+  function getBookingTotals(booking: any) {
+    const full = Number(booking.full_tickets || 0);
+    const reduced = Number(booking.reduced_tickets || 0);
+    const totalTickets = Number(booking.ticket_count || 0);
+
+    const normalizedFull =
+      full === 0 && reduced === 0 ? totalTickets : full;
+
+    const totale =
+      normalizedFull * prezzoIntero +
+      reduced * prezzoRidotto;
+
+    return {
+      full: normalizedFull,
+      reduced,
+      totalTickets,
+      totale,
+    };
+  }
+
   function exportPrenotazioniExcel() {
     const rows = filtered.map((booking) => {
       const spettacolo = SHOWS.find((s) => s.slug === showSlug)?.name || showSlug;
@@ -199,14 +220,18 @@ export default function AdminPage() {
         .map((s) => s.code)
         .join(', ');
 
+      const totals = getBookingTotals(booking);
+
       return {
         Spettacolo: spettacolo,
         Nome: booking.requester_name,
         Telefono: booking.phone,
         Email: booking.email || '',
         Ricevuta: booking.receipt_number || '',
-        Biglietti: booking.ticket_count,
-        ImportoStimato: `€${Number(booking.ticket_count || 0) * prezzoIntero}`,
+        Interi: totals.full,
+        Ridotti: totals.reduced,
+        Biglietti: totals.totalTickets,
+        TotaleStimato: `€${totals.totale}`,
         Partecipanti: booking.participant_names,
         Note: booking.notes || '',
         Confermato: booking.confirmed ? 'Sì' : 'No',
@@ -245,16 +270,33 @@ export default function AdminPage() {
     saveAs(file, `prenotazioni_${safeName}.xlsx`);
   }
 
-  const totalTicketsPaid = bookings
+  const totalPaidTickets = bookings
     .filter((b) => b.paid)
-    .reduce((sum, b) => sum + Number(b.ticket_count || 0), 0);
+    .reduce((sum, booking) => {
+      const totals = getBookingTotals(booking);
+      return sum + totals.totalTickets;
+    }, 0);
 
-  const totalTicketsRequested = bookings
-    .reduce((sum, b) => sum + Number(b.ticket_count || 0), 0);
+  const totalRequestedTickets = bookings
+    .reduce((sum, booking) => {
+      const totals = getBookingTotals(booking);
+      return sum + totals.totalTickets;
+    }, 0);
 
-  const postiRimasti = Math.max(TOTAL_POSTI - totalTicketsPaid, 0);
-  const incassoPagato = totalTicketsPaid * prezzoIntero;
-  const incassoTeorico = totalTicketsRequested * prezzoIntero;
+  const incassoPagato = bookings
+    .filter((b) => b.paid)
+    .reduce((sum, booking) => {
+      const totals = getBookingTotals(booking);
+      return sum + totals.totale;
+    }, 0);
+
+  const incassoTeorico = bookings
+    .reduce((sum, booking) => {
+      const totals = getBookingTotals(booking);
+      return sum + totals.totale;
+    }, 0);
+
+  const postiRimasti = Math.max(TOTAL_POSTI - totalPaidTickets, 0);
 
   const stats = {
     postiTotali: TOTAL_POSTI,
@@ -262,7 +304,7 @@ export default function AdminPage() {
     pagati: serials.filter((s) => s.status === 'PAGATO').length,
     prenotati: serials.filter((s) => s.status === 'PRENOTATO').length,
     ingressi: bookings.filter((b) => b.checked_in).length,
-    bigliettiPagati: totalTicketsPaid,
+    bigliettiPagati: totalPaidTickets,
     incassoPagato,
     incassoTeorico,
   };
@@ -338,7 +380,7 @@ export default function AdminPage() {
               </div>
 
               <p className="mt-4 text-xs text-zinc-500">
-                Posti rimasti calcolati sui biglietti segnati come pagati. Totali attualmente a tariffa intera (€{prezzoIntero}) per lo spettacolo selezionato.
+                Posti rimasti calcolati sui biglietti segnati come pagati. Incassi calcolati con distinzione tra interi (€{prezzoIntero}) e ridotti (€{prezzoRidotto}).
               </p>
             </CardContent>
           </Card>
@@ -379,7 +421,7 @@ export default function AdminPage() {
                 {filtered.map((booking) => {
                   const assigned = serials.filter((s) => s.booking_id === booking.id);
                   const available = serials.filter((s) => s.status === 'LIBERO').slice(0, 12);
-                  const importoStimato = Number(booking.ticket_count || 0) * prezzoIntero;
+                  const totals = getBookingTotals(booking);
 
                   return (
                     <div key={booking.id} className="rounded-2xl border bg-white p-4 space-y-4">
@@ -400,10 +442,16 @@ export default function AdminPage() {
                           <div className="text-sm text-zinc-600">📞 {booking.phone}</div>
                           <div className="text-sm text-zinc-600">✉️ {booking.email || '-'}</div>
                           <div className="text-sm text-zinc-600">
-                            Biglietti richiesti: {booking.ticket_count}
+                            Biglietti interi: {totals.full}
+                          </div>
+                          <div className="text-sm text-zinc-600">
+                            Biglietti ridotti: {totals.reduced}
+                          </div>
+                          <div className="text-sm text-zinc-600">
+                            Biglietti richiesti: {totals.totalTickets}
                           </div>
                           <div className="text-sm font-medium text-zinc-700">
-                            Totale stimato: €{importoStimato}
+                            Totale esatto: €{totals.totale}
                           </div>
                           <div className="text-sm text-zinc-600">
                             Ricevuta attuale: {booking.receipt_number || '—'}
@@ -495,7 +543,7 @@ export default function AdminPage() {
                         <div className="flex items-center justify-between gap-3">
                           <div className="font-medium">Seriali assegnati</div>
                           <div className="text-sm text-zinc-600">
-                            {assigned.length} / {booking.ticket_count}
+                            {assigned.length} / {totals.totalTickets}
                           </div>
                         </div>
 
@@ -518,7 +566,7 @@ export default function AdminPage() {
                           ))}
                         </div>
 
-                        {assigned.length < booking.ticket_count ? (
+                        {assigned.length < totals.totalTickets ? (
                           <div className="flex flex-wrap gap-2">
                             {available.map((serial) => (
                               <Button
