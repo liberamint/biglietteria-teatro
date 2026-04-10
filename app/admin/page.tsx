@@ -231,7 +231,7 @@ export default function AdminPage() {
         Interi: totals.full,
         Ridotti: totals.reduced,
         Biglietti: totals.totalTickets,
-        TotaleStimato: `€${totals.totale}`,
+        TotaleEsatto: `€${totals.totale}`,
         Partecipanti: booking.participant_names,
         Note: booking.notes || '',
         Confermato: booking.confirmed ? 'Sì' : 'No',
@@ -277,12 +277,6 @@ export default function AdminPage() {
       return sum + totals.totalTickets;
     }, 0);
 
-  const totalRequestedTickets = bookings
-    .reduce((sum, booking) => {
-      const totals = getBookingTotals(booking);
-      return sum + totals.totalTickets;
-    }, 0);
-
   const incassoPagato = bookings
     .filter((b) => b.paid)
     .reduce((sum, booking) => {
@@ -304,7 +298,6 @@ export default function AdminPage() {
     pagati: serials.filter((s) => s.status === 'PAGATO').length,
     prenotati: serials.filter((s) => s.status === 'PRENOTATO').length,
     ingressi: bookings.filter((b) => b.checked_in).length,
-    bigliettiPagati: totalPaidTickets,
     incassoPagato,
     incassoTeorico,
   };
@@ -441,21 +434,11 @@ export default function AdminPage() {
 
                           <div className="text-sm text-zinc-600">📞 {booking.phone}</div>
                           <div className="text-sm text-zinc-600">✉️ {booking.email || '-'}</div>
-                          <div className="text-sm text-zinc-600">
-                            Biglietti interi: {totals.full}
-                          </div>
-                          <div className="text-sm text-zinc-600">
-                            Biglietti ridotti: {totals.reduced}
-                          </div>
-                          <div className="text-sm text-zinc-600">
-                            Biglietti richiesti: {totals.totalTickets}
-                          </div>
-                          <div className="text-sm font-medium text-zinc-700">
-                            Totale esatto: €{totals.totale}
-                          </div>
-                          <div className="text-sm text-zinc-600">
-                            Ricevuta attuale: {booking.receipt_number || '—'}
-                          </div>
+                          <div className="text-sm text-zinc-600">Biglietti interi: {totals.full}</div>
+                          <div className="text-sm text-zinc-600">Biglietti ridotti: {totals.reduced}</div>
+                          <div className="text-sm text-zinc-600">Biglietti richiesti: {totals.totalTickets}</div>
+                          <div className="text-sm font-medium text-zinc-700">Totale esatto: €{totals.totale}</div>
+                          <div className="text-sm text-zinc-600">Ricevuta attuale: {booking.receipt_number || '—'}</div>
 
                           <div className="flex flex-col gap-2 pt-1 md:flex-row md:items-end">
                             <div className="flex-1">
