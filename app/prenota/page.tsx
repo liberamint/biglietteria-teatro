@@ -28,7 +28,9 @@ export default function PrenotaPage() {
   const [notes, setNotes] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
-  const [postiRimasti, setPostiRimasti] = useState<number>(TOTAL_POSTI);
+
+  const [postiRimastiReali, setPostiRimastiReali] = useState<number>(TOTAL_POSTI);
+  const [postiRimastiSeConfermati, setPostiRimastiSeConfermati] = useState<number>(TOTAL_POSTI);
   const [loadingPosti, setLoadingPosti] = useState(true);
 
   const selectedShow = SHOWS.find((s) => s.slug === showSlug);
@@ -40,7 +42,22 @@ export default function PrenotaPage() {
     Number(fullTickets || 0) * prezzoIntero +
     Number(reducedTickets || 0) * prezzoRidotto;
 
-  async function loadPostiRimasti(slug = showSlug) {
+  function getBookingTickets(booking: any) {
+    const full = Number(booking.full_tickets || 0);
+    const reduced = Number(booking.reduced_tickets || 0);
+    const ticketCount = Number(booking.ticket_count || 0);
+
+    const normalizedFull = full === 0 && reduced === 0 ? ticketCount : full;
+    const totalTickets = normalizedFull + reduced;
+
+    return {
+      full: normalizedFull,
+      reduced,
+      totalTickets,
+    };
+  }
+
+  async function loadDisponibilita(slug = showSlug) {
     setLoadingPosti(true);
 
     const { data: show, error: showError } = await supabase
@@ -50,34 +67,40 @@ export default function PrenotaPage() {
       .single();
 
     if (showError || !show) {
-      setPostiRimasti(TOTAL_POSTI);
+      setPostiRimastiReali(TOTAL_POSTI);
+      setPostiRimastiSeConfermati(TOTAL_POSTI);
       setLoadingPosti(false);
       return;
     }
 
-    const { data: paidBookings, error: bookingsError } = await supabase
+    const { data: bookingsData, error: bookingsError } = await supabase
       .from('bookings')
-      .select('ticket_count')
-      .eq('show_id', show.id)
-      .eq('paid', true);
+      .select('ticket_count, full_tickets, reduced_tickets, paid')
+      .eq('show_id', show.id);
 
     if (bookingsError) {
-      setPostiRimasti(TOTAL_POSTI);
+      setPostiRimastiReali(TOTAL_POSTI);
+      setPostiRimastiSeConfermati(TOTAL_POSTI);
       setLoadingPosti(false);
       return;
     }
 
-    const occupati = (paidBookings || []).reduce(
-      (sum, booking: any) => sum + Number(booking.ticket_count || 0),
-      0
-    );
+    const allBookings = bookingsData || [];
 
-    setPostiRimasti(Math.max(TOTAL_POSTI - occupati, 0));
+    const bigliettiPagati = allBookings
+      .filter((b: any) => b.paid)
+      .reduce((sum: number, booking: any) => sum + getBookingTickets(booking).totalTickets, 0);
+
+    const bigliettiPrenotatiTotali = allBookings
+      .reduce((sum: number, booking: any) => sum + getBookingTickets(booking).totalTickets, 0);
+
+    setPostiRimastiReali(Math.max(TOTAL_POSTI - bigliettiPagati, 0));
+    setPostiRimastiSeConfermati(Math.max(TOTAL_POSTI - bigliettiPrenotatiTotali, 0));
     setLoadingPosti(false);
   }
 
   useEffect(() => {
-    loadPostiRimasti(showSlug);
+    loadDisponibilita(showSlug);
   }, [showSlug]);
 
   async function submitBooking() {
@@ -108,8 +131,10 @@ export default function PrenotaPage() {
       return;
     }
 
-    if (ticketCount > postiRimasti) {
-      setMessage(`Posti insufficienti. Attualmente disponibili: ${postiRimasti}.`);
+    if (ticketCount > postiRimastiSeConfermati) {
+      setMessage(
+        `Posti insufficienti. Se tutte le prenotazioni venissero confermate, i posti disponibili sarebbero ${postiRimastiSeConfermati}.`
+      );
       setBusy(false);
       return;
     }
@@ -145,7 +170,7 @@ export default function PrenotaPage() {
     setNotes('');
     setBusy(false);
 
-    await loadPostiRimasti(showSlug);
+    await loadDisponibilita(showSlug);
   }
 
   return (
@@ -213,8 +238,18 @@ export default function PrenotaPage() {
                       Ridotto valido per bambini fino a 6 anni o per chi assiste a più spettacoli.
                     </div>
 
-                    <div className="mt-3 rounded-xl border border-[#d6c0a0] bg-[#fff7ee] px-3 py-2 text-sm font-medium text-[#5b1820]">
-                      {loadingPosti ? 'Posti disponibili: calcolo in corso...' : `Posti rimasti: ${postiRimasti}`}
+                    <div className="mt-3 space-y-2">
+                      <div className="rounded-xl border border-[#d6c0a0] bg-[#fff7ee] px-3 py-2 text-sm font-medium text-[#5b1820]">
+                        {loadingPosti
+                          ? 'Posti rimasti reali: calcolo in corso...'
+                          : `Posti rimasti reali: ${postiRimastiReali}`}
+                      </div>
+
+                      <div className="rounded-xl border border-[#d6c0a0] bg-[#fff7ee] px-3 py-2 text-sm font-medium text-[#5b1820]">
+                        {loadingPosti
+                          ? 'Posti rimasti se confermati: calcolo in corso...'
+                          : `Posti rimasti se tutte le prenotazioni venissero confermate: ${postiRimastiSeConfermati}`}
+                      </div>
                     </div>
 
                     <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
@@ -330,7 +365,7 @@ export default function PrenotaPage() {
                     !phone ||
                     !email ||
                     ticketCount <= 0 ||
-                    ticketCount > postiRimasti
+                    ticketCount > postiRimastiSeConfermati
                   }
                   className="w-full"
                 >
