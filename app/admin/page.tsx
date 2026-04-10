@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { useEffect, useMemo, useState } from 'react';
@@ -303,20 +304,48 @@ export default function AdminPage() {
 
   return (
     <PageShell>
-      <Container wide>
-        <div className="space-y-6 px-2 pt-6 sm:pt-10">
-          <div className="text-center">
-            <div className="inline-block rounded-full border border-[#d6b892] bg-white/70 px-4 py-1 text-xs uppercase tracking-[0.34em] text-[#8f7153] shadow-sm">
+      <Container>
+        <div className="relative mx-auto max-w-7xl px-2 pt-6 sm:pt-10">
+          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[320px] rounded-[38px] bg-[radial-gradient(circle_at_top,#7b2430_0%,#5a1821_34%,rgba(90,24,33,0.08)_72%,transparent_100%)] opacity-95" />
+          <div className="pointer-events-none absolute left-0 top-0 -z-10 h-full w-8 rounded-l-[38px] bg-[linear-gradient(180deg,#74202c_0%,#4b141a_100%)] opacity-85 sm:w-12" />
+          <div className="pointer-events-none absolute right-0 top-0 -z-10 h-full w-8 rounded-r-[38px] bg-[linear-gradient(180deg,#74202c_0%,#4b141a_100%)] opacity-85 sm:w-12" />
+
+          <div className="mb-8 text-center">
+            <div className="inline-block rounded-full border border-[#d6b892] bg-white/75 px-4 py-1 text-xs uppercase tracking-[0.34em] text-[#8f7153] shadow-sm">
               Regia di sala
             </div>
 
-            <h1 className="mt-4 text-3xl font-bold tracking-tight text-[#5a1821] sm:text-5xl">
+            <div className="mx-auto mt-5 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-5">
+              <div className="rounded-[26px] border border-[#e0cfb7] bg-white/90 p-3 shadow-[0_12px_24px_rgba(90,24,33,0.10)]">
+                <Image
+                  src="/logo-officina.png"
+                  alt="Logo Officina Teatrale"
+                  width={78}
+                  height={78}
+                  className="h-[64px] w-[64px] object-contain sm:h-[78px] sm:w-[78px]"
+                  priority
+                />
+              </div>
+
+              <div className="rounded-[26px] border border-[#e0cfb7] bg-white/85 p-3 shadow-[0_12px_24px_rgba(90,24,33,0.10)]">
+                <Image
+                  src="/icon.png"
+                  alt="Icona Biglietteria Teatro"
+                  width={88}
+                  height={88}
+                  className="h-[72px] w-[72px] rounded-[18px] object-cover sm:h-[88px] sm:w-[88px]"
+                  priority
+                />
+              </div>
+            </div>
+
+            <h1 className="mt-5 text-3xl font-bold tracking-tight text-[#5a1821] sm:text-5xl">
               Area amministratore
             </h1>
 
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#6d6054] sm:text-base">
-              Qui il sipario si apre sui numeri: incassi, disponibilità, ricevute,
-              seriali e controllo completo delle prenotazioni.
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#6d6054] sm:text-base">
+              Qui il sipario si apre sui numeri: disponibilità, incassi, ricevute,
+              ingressi e controllo completo delle prenotazioni.
             </p>
 
             <div className="mt-5">
@@ -329,18 +358,18 @@ export default function AdminPage() {
           </div>
 
           {saveMessage ? (
-            <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 shadow-sm">
+            <div className="mb-4 rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 shadow-sm">
               {saveMessage}
             </div>
           ) : null}
 
           {saveError ? (
-            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-sm">
+            <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-sm">
               {saveError}
             </div>
           ) : null}
 
-          <Card>
+          <Card className="bg-white/88">
             <CardContent>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-8">
                 <div className="rounded-3xl border border-[#e0cfb7] bg-white/85 p-4 shadow-sm">
@@ -390,7 +419,7 @@ export default function AdminPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="mt-6 bg-white/88">
             <CardHeader>
               <CardTitle>Gestione spettacolo</CardTitle>
             </CardHeader>
