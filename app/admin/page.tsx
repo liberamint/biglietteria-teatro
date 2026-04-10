@@ -159,14 +159,13 @@ export default function AdminPage() {
 
     const value = receiptDrafts[bookingId] || '';
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('bookings')
       .update({
         receipt_number: value.trim() || null,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', bookingId)
-      .select();
+      .eq('id', bookingId);
 
     if (error) {
       console.error('Errore salvataggio ricevuta:', error);
@@ -175,7 +174,6 @@ export default function AdminPage() {
       return;
     }
 
-    console.log('Risultato update ricevuta:', data);
     setSaveMessage('Ricevuta salvata correttamente.');
     setSavingReceiptId(null);
     await loadData();
@@ -197,12 +195,9 @@ export default function AdminPage() {
     const reduced = Number(booking.reduced_tickets || 0);
     const totalTickets = Number(booking.ticket_count || 0);
 
-    const normalizedFull =
-      full === 0 && reduced === 0 ? totalTickets : full;
+    const normalizedFull = full === 0 && reduced === 0 ? totalTickets : full;
 
-    const totale =
-      normalizedFull * prezzoIntero +
-      reduced * prezzoRidotto;
+    const totale = normalizedFull * prezzoIntero + reduced * prezzoRidotto;
 
     return {
       full: normalizedFull,
@@ -270,33 +265,37 @@ export default function AdminPage() {
     saveAs(file, `prenotazioni_${safeName}.xlsx`);
   }
 
-  const totalPaidTickets = bookings
+  const bigliettiPagati = bookings
     .filter((b) => b.paid)
-    .reduce((sum, booking) => {
-      const totals = getBookingTotals(booking);
-      return sum + totals.totalTickets;
-    }, 0);
+    .reduce((sum, booking) => sum + getBookingTotals(booking).totalTickets, 0);
+
+  const bigliettiPrenotatiNonPagati = bookings
+    .filter((b) => !b.paid)
+    .reduce((sum, booking) => sum + getBookingTotals(booking).totalTickets, 0);
+
+  const bigliettiTotaliPrenotati = bookings.reduce(
+    (sum, booking) => sum + getBookingTotals(booking).totalTickets,
+    0
+  );
 
   const incassoPagato = bookings
     .filter((b) => b.paid)
-    .reduce((sum, booking) => {
-      const totals = getBookingTotals(booking);
-      return sum + totals.totale;
-    }, 0);
+    .reduce((sum, booking) => sum + getBookingTotals(booking).totale, 0);
 
-  const incassoTeorico = bookings
-    .reduce((sum, booking) => {
-      const totals = getBookingTotals(booking);
-      return sum + totals.totale;
-    }, 0);
+  const incassoTeorico = bookings.reduce(
+    (sum, booking) => sum + getBookingTotals(booking).totale,
+    0
+  );
 
-  const postiRimasti = Math.max(TOTAL_POSTI - totalPaidTickets, 0);
+  const postiRimastiReali = Math.max(TOTAL_POSTI - bigliettiPagati, 0);
+  const postiRimastiSeConfermati = Math.max(TOTAL_POSTI - bigliettiTotaliPrenotati, 0);
 
   const stats = {
     postiTotali: TOTAL_POSTI,
-    postiRimasti,
-    pagati: serials.filter((s) => s.status === 'PAGATO').length,
-    prenotati: serials.filter((s) => s.status === 'PRENOTATO').length,
+    postiRimastiReali,
+    postiRimastiSeConfermati,
+    bigliettiPagati,
+    bigliettiPrenotatiNonPagati,
     ingressi: bookings.filter((b) => b.checked_in).length,
     incassoPagato,
     incassoTeorico,
@@ -335,25 +334,30 @@ export default function AdminPage() {
 
           <Card>
             <CardContent>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-4 xl:grid-cols-7">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-4 xl:grid-cols-8">
                 <div className="rounded-2xl border bg-zinc-50 p-4">
                   <div className="text-xs text-zinc-500">Posti totali</div>
                   <div className="mt-1 text-2xl font-bold">{stats.postiTotali}</div>
                 </div>
 
                 <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Posti rimasti</div>
-                  <div className="mt-1 text-2xl font-bold">{stats.postiRimasti}</div>
+                  <div className="text-xs text-zinc-500">Già pagati</div>
+                  <div className="mt-1 text-2xl font-bold">{stats.bigliettiPagati}</div>
                 </div>
 
                 <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Pagati</div>
-                  <div className="mt-1 text-2xl font-bold">{stats.pagati}</div>
+                  <div className="text-xs text-zinc-500">Prenotati non pagati</div>
+                  <div className="mt-1 text-2xl font-bold">{stats.bigliettiPrenotatiNonPagati}</div>
                 </div>
 
                 <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Prenotati</div>
-                  <div className="mt-1 text-2xl font-bold">{stats.prenotati}</div>
+                  <div className="text-xs text-zinc-500">Posti rimasti reali</div>
+                  <div className="mt-1 text-2xl font-bold">{stats.postiRimastiReali}</div>
+                </div>
+
+                <div className="rounded-2xl border bg-zinc-50 p-4">
+                  <div className="text-xs text-zinc-500">Posti rimasti se confermati</div>
+                  <div className="mt-1 text-2xl font-bold">{stats.postiRimastiSeConfermati}</div>
                 </div>
 
                 <div className="rounded-2xl border bg-zinc-50 p-4">
@@ -373,7 +377,7 @@ export default function AdminPage() {
               </div>
 
               <p className="mt-4 text-xs text-zinc-500">
-                Posti rimasti calcolati sui biglietti segnati come pagati. Incassi calcolati con distinzione tra interi (€{prezzoIntero}) e ridotti (€{prezzoRidotto}).
+                “Già pagati” e “Prenotati non pagati” indicano il numero di biglietti. “Posti rimasti reali” considera solo i pagati. “Posti rimasti se confermati” considera tutte le prenotazioni.
               </p>
             </CardContent>
           </Card>
