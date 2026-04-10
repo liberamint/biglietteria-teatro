@@ -7,8 +7,8 @@ export default function HomePage() {
     <PageShell>
       <Container>
         <div className="mx-auto max-w-6xl px-2 pt-8 sm:pt-12">
-          <div className="relative overflow-hidden rounded-[36px] border border-[#d9c3a5] bg-[linear-gradient(180deg,#fff9f2_0%,#f7ecde_50%,#f2e2d0_100%)] shadow-[0_20px_50px_rgba(90,24,33,0.10)]">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#ffffff70_0%,transparent_45%)]" />
+          <div className="relative overflow-hidden rounded-[36px] border border-[#d9c3a5] bg-[radial-gradient(circle_at_top,#fff6ee_0%,#f8ebdd_35%,#e8d2c4_70%,#d8b5aa_100%)] shadow-[0_20px_50px_rgba(90,24,33,0.12)]">
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0)_30%,rgba(90,24,33,0.04)_100%)]" />
 
             <div className="absolute left-0 top-0 h-full w-10 bg-[linear-gradient(180deg,#6c1c27_0%,#4d141b_100%)] opacity-90 sm:w-14" />
             <div className="absolute right-0 top-0 h-full w-10 bg-[linear-gradient(180deg,#6c1c27_0%,#4d141b_100%)] opacity-90 sm:w-14" />
@@ -42,6 +42,15 @@ export default function HomePage() {
                     alla platea, con uno spazio elegante e semplice da usare per spettatori
                     e organizzazione.
                   </p>
+
+                  <div className="mx-auto mt-6 max-w-3xl rounded-[28px] border border-[#e0cfb7] bg-white/75 px-5 py-5 shadow-sm">
+                    <p className="text-base italic leading-8 text-[#5a1821] sm:text-lg">
+                      “Il teatro non è altro che il disperato sforzo dell’uomo di dare un senso alla vita.”
+                    </p>
+                    <p className="mt-3 text-sm font-medium uppercase tracking-[0.2em] text-[#927252]">
+                      Eduardo De Filippo
+                    </p>
+                  </div>
                 </div>
 
                 <div className="mt-10 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
