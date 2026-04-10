@@ -176,17 +176,19 @@ export default function PrenotaPage() {
   return (
     <PageShell>
       <Container>
-        <div className="mx-auto max-w-3xl px-2 pt-6 sm:pt-8">
-          <div className="mb-6 text-center">
-            <div className="inline-block rounded-full border border-[#d7c0a0] bg-white/70 px-4 py-1 text-xs uppercase tracking-[0.28em] text-[#8d6b57] shadow-sm">
+        <div className="mx-auto max-w-4xl px-2 pt-6 sm:pt-10">
+          <div className="mb-8 text-center">
+            <div className="inline-block rounded-full border border-[#d6b892] bg-white/70 px-4 py-1 text-xs uppercase tracking-[0.34em] text-[#8f7153] shadow-sm">
               Prenotazioni
             </div>
-            <h1 className="mt-4 text-3xl font-bold tracking-tight text-[#5b1820] sm:text-4xl">
+
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-[#5a1821] sm:text-5xl">
               Prenota il tuo posto in platea
             </h1>
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#6f6257] sm:text-base">
-              Scegli lo spettacolo, inserisci i tuoi dati e invia la richiesta.
-              La conferma del pagamento e i seriali dei biglietti verranno gestiti dall&apos;organizzazione.
+
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-[#6d6054] sm:text-base">
+              Un piccolo sipario digitale per organizzare la tua presenza a teatro
+              con chiarezza, eleganza e informazioni sempre aggiornate.
             </p>
           </div>
 
@@ -196,12 +198,12 @@ export default function PrenotaPage() {
             </CardHeader>
 
             <CardContent>
-              <div className="space-y-5">
-                <div className="rounded-3xl border border-[#dbc8b0] bg-[linear-gradient(180deg,#fffaf4_0%,#f8efe3_100%)] p-4 shadow-sm">
-                  <label className="text-sm font-medium text-[#5b1820]">Spettacolo</label>
+              <div className="space-y-6">
+                <div className="rounded-[28px] border border-[#dbc3a4] bg-[linear-gradient(180deg,#fffaf4_0%,#f8ecde_100%)] p-5 shadow-sm">
+                  <label className="text-sm font-medium text-[#5a1821]">Spettacolo</label>
 
                   <select
-                    className="mt-2 w-full rounded-2xl border border-[#d6c0a0] bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-[#8a3943]"
+                    className="mt-2 w-full rounded-2xl border border-[#d4b28a] bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-[#8a3843]"
                     value={showSlug}
                     onChange={(e) => setShowSlug(e.target.value)}
                   >
@@ -212,10 +214,12 @@ export default function PrenotaPage() {
                     ))}
                   </select>
 
-                  <div className="mt-4 rounded-2xl border border-[#e3d2bc] bg-white/80 p-4 text-sm text-[#5f5449] shadow-sm">
-                    <div className="font-semibold text-[#5b1820]">{selectedShow?.name}</div>
+                  <div className="mt-4 rounded-3xl border border-[#e0cfb7] bg-white/85 p-5 shadow-sm">
+                    <div className="text-lg font-semibold text-[#5a1821]">
+                      {selectedShow?.name}
+                    </div>
 
-                    <div className="mt-2">
+                    <div className="mt-3 text-sm text-[#61564c]">
                       📅{' '}
                       {new Date(selectedShow?.datetime || '').toLocaleDateString('it-IT', {
                         weekday: 'long',
@@ -230,29 +234,41 @@ export default function PrenotaPage() {
                       })}
                     </div>
 
-                    <div className="mt-2 font-medium text-[#5b1820]">
+                    <div className="mt-3 text-sm font-medium text-[#5a1821]">
                       💶 Intero: €{selectedShow?.price_full} • Ridotto: €{selectedShow?.price_reduced}
                     </div>
 
-                    <div className="mt-2 text-xs text-[#7a6e63]">
+                    <div className="mt-2 text-xs text-[#7a6c5f]">
                       Ridotto valido per bambini fino a 6 anni o per chi assiste a più spettacoli.
                     </div>
 
-                    <div className="mt-3 space-y-2">
-                      <div className="rounded-xl border border-[#d6c0a0] bg-[#fff7ee] px-3 py-2 text-sm font-medium text-[#5b1820]">
-                        {loadingPosti
-                          ? 'Posti rimasti reali: calcolo in corso...'
-                          : `Posti rimasti reali: ${postiRimastiReali}`}
+                    <div className="mt-4 grid gap-3 md:grid-cols-2">
+                      <div className="rounded-2xl border border-[#d6c0a0] bg-[#fff7ee] px-4 py-3 text-sm">
+                        <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
+                          Disponibilità reale
+                        </div>
+                        <div className="mt-1 text-2xl font-bold text-[#5a1821]">
+                          {loadingPosti ? '...' : postiRimastiReali}
+                        </div>
+                        <div className="mt-1 text-xs text-[#74675c]">
+                          Considera solo i biglietti già pagati
+                        </div>
                       </div>
 
-                      <div className="rounded-xl border border-[#d6c0a0] bg-[#fff7ee] px-3 py-2 text-sm font-medium text-[#5b1820]">
-                        {loadingPosti
-                          ? 'Posti rimasti se confermati: calcolo in corso...'
-                          : `Posti rimasti se tutte le prenotazioni venissero confermate: ${postiRimastiSeConfermati}`}
+                      <div className="rounded-2xl border border-[#d6c0a0] bg-[#fff7ee] px-4 py-3 text-sm">
+                        <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
+                          Disponibilità potenziale
+                        </div>
+                        <div className="mt-1 text-2xl font-bold text-[#5a1821]">
+                          {loadingPosti ? '...' : postiRimastiSeConfermati}
+                        </div>
+                        <div className="mt-1 text-xs text-[#74675c]">
+                          Se tutte le prenotazioni venissero confermate
+                        </div>
                       </div>
                     </div>
 
-                    <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
+                    <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">
                       ⚠️ Da pagare in Officina entro 10 giorni dalla prenotazione, pena decadimento della stessa.
                     </div>
                   </div>
@@ -260,7 +276,7 @@ export default function PrenotaPage() {
 
                 <div className="grid gap-5 md:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5b1820]">
+                    <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Nome e cognome
                     </label>
                     <Input
@@ -271,7 +287,7 @@ export default function PrenotaPage() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5b1820]">
+                    <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Telefono
                     </label>
                     <Input
@@ -282,7 +298,7 @@ export default function PrenotaPage() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5b1820]">
+                    <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Email
                     </label>
                     <Input
@@ -296,7 +312,7 @@ export default function PrenotaPage() {
 
                 <div className="grid gap-5 md:grid-cols-2">
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5b1820]">
+                    <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Biglietti interi
                     </label>
                     <Input
@@ -309,7 +325,7 @@ export default function PrenotaPage() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#5b1820]">
+                    <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Biglietti ridotti
                     </label>
                     <Input
@@ -322,14 +338,30 @@ export default function PrenotaPage() {
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-[#e2d3bf] bg-white/70 p-4 text-sm text-[#6d6155]">
-                  Totale richiesto: <span className="font-semibold text-[#5b1820]">{ticketCount}</span>
-                  <br />
-                  Totale da corrispondere: <span className="font-semibold text-[#5b1820]">€{totaleStimato}</span>
+                <div className="rounded-3xl border border-[#e0cfb7] bg-white/80 p-5 shadow-sm">
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <div>
+                      <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
+                        Biglietti richiesti
+                      </div>
+                      <div className="mt-1 text-3xl font-bold text-[#5a1821]">
+                        {ticketCount}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
+                        Totale da corrispondere
+                      </div>
+                      <div className="mt-1 text-3xl font-bold text-[#5a1821]">
+                        €{totaleStimato}
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[#5b1820]">
+                  <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                     Nomi partecipanti
                   </label>
                   <Textarea
@@ -341,7 +373,7 @@ export default function PrenotaPage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-[#5b1820]">
+                  <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                     Note
                   </label>
                   <Textarea
@@ -373,7 +405,7 @@ export default function PrenotaPage() {
                 </Button>
 
                 {message ? (
-                  <div className="rounded-2xl border border-[#d8c1a1] bg-white/80 px-4 py-3 text-sm text-[#5b1820] shadow-sm">
+                  <div className="rounded-2xl border border-[#dcc6a7] bg-white/85 px-4 py-3 text-sm text-[#5a1821] shadow-sm">
                     {message}
                   </div>
                 ) : null}

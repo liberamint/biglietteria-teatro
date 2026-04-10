@@ -193,10 +193,10 @@ export default function AdminPage() {
   function getBookingTotals(booking: any) {
     const full = Number(booking.full_tickets || 0);
     const reduced = Number(booking.reduced_tickets || 0);
-    const totalTickets = Number(booking.ticket_count || 0);
+    const ticketCount = Number(booking.ticket_count || 0);
 
-    const normalizedFull = full === 0 && reduced === 0 ? totalTickets : full;
-
+    const normalizedFull = full === 0 && reduced === 0 ? ticketCount : full;
+    const totalTickets = normalizedFull + reduced;
     const totale = normalizedFull * prezzoIntero + reduced * prezzoRidotto;
 
     return {
@@ -304,80 +304,88 @@ export default function AdminPage() {
   return (
     <PageShell>
       <Container wide>
-        <div className="space-y-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">Area amministratore 🎭</h1>
-              <p className="text-sm text-zinc-600">
-                Pagamento, seriali, ricevuta e incasso sono gestiti solo qui.
-              </p>
+        <div className="space-y-6 px-2 pt-6 sm:pt-10">
+          <div className="text-center">
+            <div className="inline-block rounded-full border border-[#d6b892] bg-white/70 px-4 py-1 text-xs uppercase tracking-[0.34em] text-[#8f7153] shadow-sm">
+              Regia di sala
             </div>
 
-            <form action={logout}>
-              <Button type="submit" variant="outline">
-                Esci
-              </Button>
-            </form>
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-[#5a1821] sm:text-5xl">
+              Area amministratore
+            </h1>
+
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#6d6054] sm:text-base">
+              Qui il sipario si apre sui numeri: incassi, disponibilità, ricevute,
+              seriali e controllo completo delle prenotazioni.
+            </p>
+
+            <div className="mt-5">
+              <form action={logout}>
+                <Button type="submit" variant="outline">
+                  Esci
+                </Button>
+              </form>
+            </div>
           </div>
 
           {saveMessage ? (
-            <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+            <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 shadow-sm">
               {saveMessage}
             </div>
           ) : null}
 
           {saveError ? (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-sm">
               {saveError}
             </div>
           ) : null}
 
           <Card>
             <CardContent>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-4 xl:grid-cols-8">
-                <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Posti totali</div>
-                  <div className="mt-1 text-2xl font-bold">{stats.postiTotali}</div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-8">
+                <div className="rounded-3xl border border-[#e0cfb7] bg-white/85 p-4 shadow-sm">
+                  <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">Posti totali</div>
+                  <div className="mt-2 text-3xl font-bold text-[#5a1821]">{stats.postiTotali}</div>
                 </div>
 
-                <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Già pagati</div>
-                  <div className="mt-1 text-2xl font-bold">{stats.bigliettiPagati}</div>
+                <div className="rounded-3xl border border-[#e0cfb7] bg-white/85 p-4 shadow-sm">
+                  <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">Già pagati</div>
+                  <div className="mt-2 text-3xl font-bold text-[#5a1821]">{stats.bigliettiPagati}</div>
                 </div>
 
-                <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Prenotati non pagati</div>
-                  <div className="mt-1 text-2xl font-bold">{stats.bigliettiPrenotatiNonPagati}</div>
+                <div className="rounded-3xl border border-[#e0cfb7] bg-white/85 p-4 shadow-sm">
+                  <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">Prenotati</div>
+                  <div className="mt-2 text-3xl font-bold text-[#5a1821]">{stats.bigliettiPrenotatiNonPagati}</div>
                 </div>
 
-                <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Posti rimasti reali</div>
-                  <div className="mt-1 text-2xl font-bold">{stats.postiRimastiReali}</div>
+                <div className="rounded-3xl border border-[#e0cfb7] bg-white/85 p-4 shadow-sm">
+                  <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">Posti rimasti reali</div>
+                  <div className="mt-2 text-3xl font-bold text-[#5a1821]">{stats.postiRimastiReali}</div>
                 </div>
 
-                <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Posti rimasti se confermati</div>
-                  <div className="mt-1 text-2xl font-bold">{stats.postiRimastiSeConfermati}</div>
+                <div className="rounded-3xl border border-[#e0cfb7] bg-white/85 p-4 shadow-sm">
+                  <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">Posti rimasti se confermati</div>
+                  <div className="mt-2 text-3xl font-bold text-[#5a1821]">{stats.postiRimastiSeConfermati}</div>
                 </div>
 
-                <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Ingressi</div>
-                  <div className="mt-1 text-2xl font-bold">{stats.ingressi}</div>
+                <div className="rounded-3xl border border-[#e0cfb7] bg-white/85 p-4 shadow-sm">
+                  <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">Ingressi</div>
+                  <div className="mt-2 text-3xl font-bold text-[#5a1821]">{stats.ingressi}</div>
                 </div>
 
-                <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Incasso pagato</div>
-                  <div className="mt-1 text-2xl font-bold">€{stats.incassoPagato}</div>
+                <div className="rounded-3xl border border-[#e0cfb7] bg-white/85 p-4 shadow-sm">
+                  <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">Incasso pagato</div>
+                  <div className="mt-2 text-3xl font-bold text-[#5a1821]">€{stats.incassoPagato}</div>
                 </div>
 
-                <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Incasso teorico</div>
-                  <div className="mt-1 text-2xl font-bold">€{stats.incassoTeorico}</div>
+                <div className="rounded-3xl border border-[#e0cfb7] bg-white/85 p-4 shadow-sm">
+                  <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">Incasso teorico</div>
+                  <div className="mt-2 text-3xl font-bold text-[#5a1821]">€{stats.incassoTeorico}</div>
                 </div>
               </div>
 
-              <p className="mt-4 text-xs text-zinc-500">
-                “Già pagati” e “Prenotati non pagati” indicano il numero di biglietti. “Posti rimasti reali” considera solo i pagati. “Posti rimasti se confermati” considera tutte le prenotazioni.
+              <p className="mt-4 text-xs text-[#7a6c5f]">
+                “Già pagati” e “Prenotati” indicano il numero di biglietti. “Posti rimasti reali” considera solo i pagati. “Posti rimasti se confermati” considera tutte le prenotazioni.
               </p>
             </CardContent>
           </Card>
@@ -390,7 +398,7 @@ export default function AdminPage() {
             <CardContent>
               <div className="mb-6 flex flex-col gap-3 md:flex-row">
                 <select
-                  className="w-full rounded-2xl border bg-white px-4 py-3 text-sm md:w-72"
+                  className="w-full rounded-2xl border border-[#d4b28a] bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition focus:border-[#8a3843] md:w-72"
                   value={showSlug}
                   onChange={(e) => setShowSlug(e.target.value)}
                 >
@@ -412,20 +420,25 @@ export default function AdminPage() {
                 </Button>
               </div>
 
-              {loading ? <p className="text-sm text-zinc-500">Caricamento...</p> : null}
+              {loading ? <p className="text-sm text-[#6d6054]">Caricamento...</p> : null}
 
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {filtered.map((booking) => {
                   const assigned = serials.filter((s) => s.booking_id === booking.id);
                   const available = serials.filter((s) => s.status === 'LIBERO').slice(0, 12);
                   const totals = getBookingTotals(booking);
 
                   return (
-                    <div key={booking.id} className="rounded-2xl border bg-white p-4 space-y-4">
-                      <div className="flex flex-col gap-3 lg:flex-row lg:justify-between">
-                        <div className="space-y-2">
+                    <div
+                      key={booking.id}
+                      className="rounded-[28px] border border-[#e0cfb7] bg-white/88 p-5 shadow-sm"
+                    >
+                      <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
+                        <div className="space-y-3">
                           <div className="flex flex-wrap items-center gap-2">
-                            <div className="text-lg font-semibold">{booking.requester_name}</div>
+                            <div className="text-xl font-semibold text-[#5a1821]">
+                              {booking.requester_name}
+                            </div>
                             {booking.confirmed ? <Badge>Confermato</Badge> : null}
                             {booking.paid ? <Badge>Pagato</Badge> : null}
                             {booking.checked_in ? <Badge>Entrato</Badge> : null}
@@ -436,17 +449,24 @@ export default function AdminPage() {
                             ) : null}
                           </div>
 
-                          <div className="text-sm text-zinc-600">📞 {booking.phone}</div>
-                          <div className="text-sm text-zinc-600">✉️ {booking.email || '-'}</div>
-                          <div className="text-sm text-zinc-600">Biglietti interi: {totals.full}</div>
-                          <div className="text-sm text-zinc-600">Biglietti ridotti: {totals.reduced}</div>
-                          <div className="text-sm text-zinc-600">Biglietti richiesti: {totals.totalTickets}</div>
-                          <div className="text-sm font-medium text-zinc-700">Totale esatto: €{totals.totale}</div>
-                          <div className="text-sm text-zinc-600">Ricevuta attuale: {booking.receipt_number || '—'}</div>
+                          <div className="grid gap-2 sm:grid-cols-2">
+                            <div className="text-sm text-[#61564c]">📞 {booking.phone}</div>
+                            <div className="text-sm text-[#61564c]">✉️ {booking.email || '-'}</div>
+                            <div className="text-sm text-[#61564c]">Biglietti interi: {totals.full}</div>
+                            <div className="text-sm text-[#61564c]">Biglietti ridotti: {totals.reduced}</div>
+                            <div className="text-sm text-[#61564c]">Biglietti richiesti: {totals.totalTickets}</div>
+                            <div className="text-sm font-medium text-[#5a1821]">Totale esatto: €{totals.totale}</div>
+                          </div>
+
+                          <div className="rounded-2xl border border-[#e0cfb7] bg-[#fffaf4] px-4 py-3 text-sm text-[#61564c]">
+                            Ricevuta attuale: <span className="font-medium text-[#5a1821]">{booking.receipt_number || '—'}</span>
+                          </div>
 
                           <div className="flex flex-col gap-2 pt-1 md:flex-row md:items-end">
                             <div className="flex-1">
-                              <label className="text-xs text-zinc-500">Numero ricevuta</label>
+                              <label className="text-xs uppercase tracking-[0.18em] text-[#927252]">
+                                Numero ricevuta
+                              </label>
                               <input
                                 type="text"
                                 value={
@@ -461,7 +481,7 @@ export default function AdminPage() {
                                   }))
                                 }
                                 placeholder="Inserisci seriale ricevuta"
-                                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm"
+                                className="mt-1 w-full rounded-2xl border border-[#d4b28a] bg-white px-3 py-2 text-sm shadow-sm"
                               />
                             </div>
 
@@ -475,15 +495,15 @@ export default function AdminPage() {
                             </Button>
                           </div>
 
-                          <div className="whitespace-pre-line text-sm text-zinc-600">
+                          <div className="rounded-2xl border border-[#eadcc9] bg-[#fffdf9] p-4 text-sm text-[#61564c] whitespace-pre-line">
                             {booking.participant_names}
                           </div>
 
-                          <div className="text-xs text-zinc-500">
+                          <div className="text-xs text-[#7a6c5f]">
                             Aggiornato: {formatDateTime(booking.updated_at)}
                           </div>
 
-                          <div className="text-xs text-zinc-500">
+                          <div className="text-xs text-[#7a6c5f]">
                             Scadenza pagamento:{' '}
                             {booking.created_at
                               ? new Date(
@@ -498,7 +518,7 @@ export default function AdminPage() {
                           </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2 lg:max-w-[260px] lg:justify-end">
                           <Button
                             variant={booking.confirmed ? 'secondary' : 'outline'}
                             onClick={() =>
@@ -526,17 +546,17 @@ export default function AdminPage() {
                         </div>
                       </div>
 
-                      <div className="rounded-2xl border bg-zinc-50 p-4 space-y-3">
+                      <div className="mt-5 rounded-3xl border border-[#e0cfb7] bg-[linear-gradient(180deg,#fffaf4_0%,#f8ecde_100%)] p-4">
                         <div className="flex items-center justify-between gap-3">
-                          <div className="font-medium">Seriali assegnati</div>
-                          <div className="text-sm text-zinc-600">
+                          <div className="font-medium text-[#5a1821]">Seriali assegnati</div>
+                          <div className="text-sm text-[#61564c]">
                             {assigned.length} / {totals.totalTickets}
                           </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-2">
+                        <div className="mt-3 flex flex-wrap gap-2">
                           {assigned.length === 0 ? (
-                            <span className="text-sm text-zinc-500">
+                            <span className="text-sm text-[#7a6c5f]">
                               Nessun seriale assegnato.
                             </span>
                           ) : null}
@@ -545,7 +565,7 @@ export default function AdminPage() {
                             <button
                               key={serial.id}
                               type="button"
-                              className="rounded-full border bg-white px-3 py-1 text-sm"
+                              className="rounded-full border bg-white px-3 py-1 text-sm shadow-sm"
                               onClick={() => freeSerial(serial.id)}
                             >
                               {serial.code}
@@ -554,7 +574,7 @@ export default function AdminPage() {
                         </div>
 
                         {assigned.length < totals.totalTickets ? (
-                          <div className="flex flex-wrap gap-2">
+                          <div className="mt-3 flex flex-wrap gap-2">
                             {available.map((serial) => (
                               <Button
                                 key={serial.id}
