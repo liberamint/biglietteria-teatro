@@ -7,11 +7,13 @@ export default function HomePage() {
     <PageShell>
       <Container>
         <div className="mx-auto max-w-6xl px-2 pt-8 sm:pt-12">
-          <div className="relative overflow-hidden rounded-[36px] border border-[#d9c3a5] bg-[radial-gradient(circle_at_top,#fff6ee_0%,#f8ebdd_35%,#e8d2c4_70%,#d8b5aa_100%)] shadow-[0_20px_50px_rgba(90,24,33,0.12)]">
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0)_30%,rgba(90,24,33,0.04)_100%)]" />
+          <div className="relative overflow-hidden rounded-[40px] border border-[#d9c3a5] bg-[radial-gradient(circle_at_top,#fff7ef_0%,#faeee2_30%,#ead4c4_68%,#d7b0a7_100%)] shadow-[0_24px_60px_rgba(90,24,33,0.14)]">
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.38)_0%,rgba(255,255,255,0.04)_38%,rgba(90,24,33,0.06)_100%)]" />
 
-            <div className="absolute left-0 top-0 h-full w-10 bg-[linear-gradient(180deg,#6c1c27_0%,#4d141b_100%)] opacity-90 sm:w-14" />
-            <div className="absolute right-0 top-0 h-full w-10 bg-[linear-gradient(180deg,#6c1c27_0%,#4d141b_100%)] opacity-90 sm:w-14" />
+            <div className="absolute left-0 top-0 h-full w-10 bg-[linear-gradient(180deg,#74202c_0%,#4b141a_100%)] opacity-95 sm:w-16" />
+            <div className="absolute right-0 top-0 h-full w-10 bg-[linear-gradient(180deg,#74202c_0%,#4b141a_100%)] opacity-95 sm:w-16" />
+
+            <div className="absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.55)_0%,rgba(255,255,255,0)_75%)]" />
 
             <div className="relative px-5 py-8 sm:px-10 sm:py-12">
               <div className="mx-auto max-w-5xl">
@@ -21,13 +23,13 @@ export default function HomePage() {
                   </div>
 
                   <div className="mx-auto mt-6 flex justify-center">
-                    <div className="rounded-[28px] border border-[#e0cfb7] bg-white/85 p-4 shadow-lg">
+                    <div className="rounded-[30px] border border-[#e0cfb7] bg-white/85 p-4 shadow-[0_12px_30px_rgba(90,24,33,0.10)]">
                       <Image
                         src="/icon.png"
                         alt="Icona Biglietteria Teatro"
-                        width={110}
-                        height={110}
-                        className="h-[90px] w-[90px] rounded-[20px] object-cover sm:h-[110px] sm:w-[110px]"
+                        width={120}
+                        height={120}
+                        className="h-[96px] w-[96px] rounded-[22px] object-cover sm:h-[120px] sm:w-[120px]"
                         priority
                       />
                     </div>
@@ -43,20 +45,28 @@ export default function HomePage() {
                     e organizzazione.
                   </p>
 
-                  <div className="mx-auto mt-6 max-w-3xl rounded-[28px] border border-[#e0cfb7] bg-white/75 px-5 py-5 shadow-sm">
-                    <p className="text-base italic leading-8 text-[#5a1821] sm:text-lg">
-                      “Il teatro non è altro che il disperato sforzo dell’uomo di dare un senso alla vita.”
+                  <div className="mx-auto mt-8 max-w-4xl rounded-[32px] border border-[#e0cfb7] bg-white/72 px-6 py-7 shadow-[0_12px_30px_rgba(90,24,33,0.08)] backdrop-blur">
+                    <div className="text-3xl leading-none text-[#b08a5d]">“</div>
+
+                    <p className="mx-auto mt-2 max-w-3xl text-lg italic leading-9 text-[#5a1821] sm:text-xl sm:leading-10">
+                      Il teatro non è altro che il disperato sforzo dell’uomo
+                      di dare un senso alla vita.
                     </p>
-                    <p className="mt-3 text-sm font-medium uppercase tracking-[0.2em] text-[#927252]">
-                      Eduardo De Filippo
-                    </p>
+
+                    <div className="mt-5 flex items-center justify-center gap-3">
+                      <span className="h-px w-10 bg-[#d2b48f]" />
+                      <p className="text-xs font-medium uppercase tracking-[0.28em] text-[#927252] sm:text-sm">
+                        Eduardo De Filippo
+                      </p>
+                      <span className="h-px w-10 bg-[#d2b48f]" />
+                    </div>
                   </div>
                 </div>
 
                 <div className="mt-10 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
                   <Card className="bg-white/82">
                     <CardContent>
-                      <div className="rounded-[28px] border border-[#e2d1ba] bg-[linear-gradient(180deg,#fffdf9_0%,#f8efe3_100%)] p-6 shadow-sm sm:p-8">
+                      <div className="rounded-[30px] border border-[#e2d1ba] bg-[linear-gradient(180deg,#fffdf9_0%,#f8efe3_100%)] p-6 shadow-sm sm:p-8">
                         <div className="text-xs uppercase tracking-[0.25em] text-[#927252]">
                           Inizia da qui
                         </div>
@@ -120,7 +130,7 @@ export default function HomePage() {
                   <div className="grid gap-6">
                     <Card className="bg-white/82">
                       <CardContent>
-                        <div className="rounded-[28px] border border-[#e2d1ba] bg-white/75 p-6 shadow-sm">
+                        <div className="rounded-[30px] border border-[#e2d1ba] bg-white/75 p-6 shadow-sm">
                           <div className="text-xs uppercase tracking-[0.25em] text-[#927252]">
                             Accesso rapido
                           </div>
@@ -154,7 +164,7 @@ export default function HomePage() {
 
                     <Card className="bg-white/82">
                       <CardContent>
-                        <div className="rounded-[28px] border border-[#e2d1ba] bg-[linear-gradient(180deg,#fffdf9_0%,#f8efe3_100%)] p-6 shadow-sm">
+                        <div className="rounded-[30px] border border-[#e2d1ba] bg-[linear-gradient(180deg,#fffdf9_0%,#f8efe3_100%)] p-6 shadow-sm">
                           <div className="text-xs uppercase tracking-[0.25em] text-[#927252]">
                             Nota di scena
                           </div>
