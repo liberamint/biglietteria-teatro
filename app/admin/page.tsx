@@ -4,7 +4,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { useEffect, useMemo, useState } from 'react';
 import { createClient } from '@/lib/supabase-browser';
-import { SHOWS } from '@/lib/config';
+import { SHOWS, TOTAL_POSTI } from '@/lib/config';
 import { formatDateTime } from '@/lib/utils';
 import {
   Badge,
@@ -252,11 +252,13 @@ export default function AdminPage() {
   const totalTicketsRequested = bookings
     .reduce((sum, b) => sum + Number(b.ticket_count || 0), 0);
 
+  const postiRimasti = Math.max(TOTAL_POSTI - totalTicketsPaid, 0);
   const incassoPagato = totalTicketsPaid * prezzoIntero;
   const incassoTeorico = totalTicketsRequested * prezzoIntero;
 
   const stats = {
-    liberi: serials.filter((s) => s.status === 'LIBERO').length,
+    postiTotali: TOTAL_POSTI,
+    postiRimasti,
     pagati: serials.filter((s) => s.status === 'PAGATO').length,
     prenotati: serials.filter((s) => s.status === 'PRENOTATO').length,
     ingressi: bookings.filter((b) => b.checked_in).length,
@@ -300,8 +302,13 @@ export default function AdminPage() {
             <CardContent>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-4 xl:grid-cols-7">
                 <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Posti liberi</div>
-                  <div className="mt-1 text-2xl font-bold">{stats.liberi}</div>
+                  <div className="text-xs text-zinc-500">Posti totali</div>
+                  <div className="mt-1 text-2xl font-bold">{stats.postiTotali}</div>
+                </div>
+
+                <div className="rounded-2xl border bg-zinc-50 p-4">
+                  <div className="text-xs text-zinc-500">Posti rimasti</div>
+                  <div className="mt-1 text-2xl font-bold">{stats.postiRimasti}</div>
                 </div>
 
                 <div className="rounded-2xl border bg-zinc-50 p-4">
@@ -320,11 +327,6 @@ export default function AdminPage() {
                 </div>
 
                 <div className="rounded-2xl border bg-zinc-50 p-4">
-                  <div className="text-xs text-zinc-500">Biglietti pagati</div>
-                  <div className="mt-1 text-2xl font-bold">{stats.bigliettiPagati}</div>
-                </div>
-
-                <div className="rounded-2xl border bg-zinc-50 p-4">
                   <div className="text-xs text-zinc-500">Incasso pagato</div>
                   <div className="mt-1 text-2xl font-bold">€{stats.incassoPagato}</div>
                 </div>
@@ -336,7 +338,7 @@ export default function AdminPage() {
               </div>
 
               <p className="mt-4 text-xs text-zinc-500">
-                Totali calcolati attualmente a tariffa intera (€{prezzoIntero}) per lo spettacolo selezionato.
+                Posti rimasti calcolati sui biglietti segnati come pagati. Totali attualmente a tariffa intera (€{prezzoIntero}) per lo spettacolo selezionato.
               </p>
             </CardContent>
           </Card>

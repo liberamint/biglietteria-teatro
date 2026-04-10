@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase-browser';
-import { SHOWS } from '@/lib/config';
+import { SHOWS, TOTAL_POSTI } from '@/lib/config';
 import {
   Container,
   PageShell,
@@ -27,8 +27,50 @@ export default function PrenotaPage() {
   const [notes, setNotes] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const [postiRimasti, setPostiRimasti] = useState<number>(TOTAL_POSTI);
+  const [loadingPosti, setLoadingPosti] = useState(true);
 
   const selectedShow = SHOWS.find((s) => s.slug === showSlug);
+
+  async function loadPostiRimasti(slug = showSlug) {
+    setLoadingPosti(true);
+
+    const { data: show, error: showError } = await supabase
+      .from('shows')
+      .select('id')
+      .eq('slug', slug)
+      .single();
+
+    if (showError || !show) {
+      setPostiRimasti(TOTAL_POSTI);
+      setLoadingPosti(false);
+      return;
+    }
+
+    const { data: paidBookings, error: bookingsError } = await supabase
+      .from('bookings')
+      .select('ticket_count')
+      .eq('show_id', show.id)
+      .eq('paid', true);
+
+    if (bookingsError) {
+      setPostiRimasti(TOTAL_POSTI);
+      setLoadingPosti(false);
+      return;
+    }
+
+    const occupati = (paidBookings || []).reduce(
+      (sum, booking: any) => sum + Number(booking.ticket_count || 0),
+      0
+    );
+
+    setPostiRimasti(Math.max(TOTAL_POSTI - occupati, 0));
+    setLoadingPosti(false);
+  }
+
+  useEffect(() => {
+    loadPostiRimasti(showSlug);
+  }, [showSlug]);
 
   async function submitBooking() {
     setBusy(true);
@@ -48,6 +90,12 @@ export default function PrenotaPage() {
 
     if (!show) {
       setMessage(`Spettacolo non trovato: ${showSlug}`);
+      setBusy(false);
+      return;
+    }
+
+    if (ticketCount > postiRimasti) {
+      setMessage(`Posti insufficienti. Attualmente disponibili: ${postiRimasti}.`);
       setBusy(false);
       return;
     }
@@ -79,6 +127,8 @@ export default function PrenotaPage() {
     setParticipantNames('');
     setNotes('');
     setBusy(false);
+
+    await loadPostiRimasti(showSlug);
   }
 
   return (
@@ -144,6 +194,10 @@ export default function PrenotaPage() {
 
                     <div className="mt-2 text-xs text-[#7a6e63]">
                       Ridotto valido per bambini fino a 6 anni o per chi assiste a più spettacoli.
+                    </div>
+
+                    <div className="mt-3 rounded-xl border border-[#d6c0a0] bg-[#fff7ee] px-3 py-2 text-sm font-medium text-[#5b1820]">
+                      {loadingPosti ? 'Posti disponibili: calcolo in corso...' : `Posti rimasti: ${postiRimasti}`}
                     </div>
 
                     <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
@@ -232,7 +286,14 @@ export default function PrenotaPage() {
 
                 <Button
                   onClick={submitBooking}
-                  disabled={busy || !requesterName || !phone || !email || ticketCount <= 0}
+                  disabled={
+                    busy ||
+                    !requesterName ||
+                    !phone ||
+                    !email ||
+                    ticketCount <= 0 ||
+                    ticketCount > postiRimasti
+                  }
                   className="w-full"
                 >
                   {busy ? 'Invio...' : 'Invia richiesta'}
