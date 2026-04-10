@@ -191,7 +191,7 @@ export default function PrenotaPage() {
               <div className="rounded-[26px] border border-[#e0cfb7] bg-white/90 p-3 shadow-[0_12px_24px_rgba(90,24,33,0.10)]">
                 <Image
                   src="/logo-officina.png"
-                  alt="Logo Officina Teatrale"
+                  alt="Logo Officina Teatrale Il Ponte"
                   width={78}
                   height={78}
                   className="h-[64px] w-[64px] object-contain sm:h-[78px] sm:w-[78px]"
@@ -211,7 +211,11 @@ export default function PrenotaPage() {
               </div>
             </div>
 
-            <h1 className="mt-5 text-3xl font-bold tracking-tight text-[#5a1821] sm:text-5xl">
+            <div className="mt-4 text-sm font-semibold uppercase tracking-[0.22em] text-[#8f7153]">
+              Officina Teatrale Il Ponte
+            </div>
+
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-[#5a1821] sm:text-5xl">
               Prenota il tuo posto in platea
             </h1>
 
@@ -245,9 +249,7 @@ export default function PrenotaPage() {
                   </select>
 
                   <div className="mt-4 rounded-3xl border border-[#e0cfb7] bg-white/85 p-5 shadow-sm">
-                    <div className="text-lg font-semibold text-[#5a1821]">
-                      {selectedShow?.name}
-                    </div>
+                    <div className="text-lg font-semibold text-[#5a1821]">{selectedShow?.name}</div>
 
                     <div className="mt-3 text-sm text-[#61564c]">
                       📅{' '}
@@ -309,34 +311,21 @@ export default function PrenotaPage() {
                     <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Nome e cognome
                     </label>
-                    <Input
-                      value={requesterName}
-                      onChange={(e) => setRequesterName(e.target.value)}
-                      required
-                    />
+                    <Input value={requesterName} onChange={(e) => setRequesterName(e.target.value)} required />
                   </div>
 
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Telefono
                     </label>
-                    <Input
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      required
-                    />
+                    <Input value={phone} onChange={(e) => setPhone(e.target.value)} required />
                   </div>
 
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Email
                     </label>
-                    <Input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
+                    <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                   </div>
                 </div>
 
@@ -374,18 +363,14 @@ export default function PrenotaPage() {
                       <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
                         Biglietti richiesti
                       </div>
-                      <div className="mt-1 text-3xl font-bold text-[#5a1821]">
-                        {ticketCount}
-                      </div>
+                      <div className="mt-1 text-3xl font-bold text-[#5a1821]">{ticketCount}</div>
                     </div>
 
                     <div>
                       <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
                         Totale da corrispondere
                       </div>
-                      <div className="mt-1 text-3xl font-bold text-[#5a1821]">
-                        €{totaleStimato}
-                      </div>
+                      <div className="mt-1 text-3xl font-bold text-[#5a1821]">€{totaleStimato}</div>
                     </div>
                   </div>
                 </div>

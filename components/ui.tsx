@@ -12,15 +12,7 @@ function cn(...classes: Array<string | false | null | undefined>) {
 }
 
 export function PageShell({ className, ...props }: DivProps) {
-  return (
-    <div
-      className={cn(
-        'min-h-screen',
-        className
-      )}
-      {...props}
-    />
-  );
+  return <div className={cn('min-h-screen', className)} {...props} />;
 }
 
 export function Container({
@@ -30,11 +22,7 @@ export function Container({
 }: DivProps & { wide?: boolean }) {
   return (
     <div
-      className={cn(
-        'mx-auto w-full px-3 sm:px-5',
-        wide ? 'max-w-7xl' : 'max-w-5xl',
-        className
-      )}
+      className={cn('mx-auto w-full px-3 sm:px-5', wide ? 'max-w-7xl' : 'max-w-5xl', className)}
       {...props}
     />
   );
@@ -53,57 +41,36 @@ export function Card({ className, ...props }: DivProps) {
 }
 
 export function CardHeader({ className, ...props }: DivProps) {
-  return (
-    <div
-      className={cn(
-        'border-b border-[#efe2d2] px-5 py-4 sm:px-6',
-        className
-      )}
-      {...props}
-    />
-  );
+  return <div className={cn('border-b border-[#efe2d2] px-5 py-4 sm:px-6', className)} {...props} />;
 }
 
 export function CardTitle({ className, ...props }: DivProps) {
   return (
     <div
-      className={cn(
-        'text-lg font-semibold tracking-tight text-[#5a1821] sm:text-xl',
-        className
-      )}
+      className={cn('text-lg font-semibold tracking-tight text-[#5a1821] sm:text-xl', className)}
       {...props}
     />
   );
 }
 
 export function CardContent({ className, ...props }: DivProps) {
+  return <div className={cn('px-5 py-5 sm:px-6 sm:py-6', className)} {...props} />;
+}
+
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, ...props }, ref) => {
   return (
-    <div
+    <input
+      ref={ref}
       className={cn(
-        'px-5 py-5 sm:px-6 sm:py-6',
+        'w-full rounded-2xl border border-[#d4b28a] bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition',
+        'placeholder:text-[#9a8a7a]',
+        'focus:border-[#8a3843] focus:ring-2 focus:ring-[#8a3843]/10',
         className
       )}
       {...props}
     />
   );
-}
-
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, ...props }, ref) => {
-    return (
-      <input
-        ref={ref}
-        className={cn(
-          'w-full rounded-2xl border border-[#d4b28a] bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm outline-none transition',
-          'placeholder:text-[#9a8a7a]',
-          'focus:border-[#8a3843] focus:ring-2 focus:ring-[#8a3843]/10',
-          className
-        )}
-        {...props}
-      />
-    );
-  }
-);
+});
 Input.displayName = 'Input';
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
@@ -127,36 +94,23 @@ Textarea.displayName = 'Textarea';
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', type = 'button', ...props }, ref) => {
     const base =
-      'inline-flex items-center justify-center rounded-full px-4 py-2.5 text-sm font-medium shadow-sm transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60';
+      'inline-flex items-center justify-center rounded-full px-4 py-2.5 text-sm font-bold shadow-sm transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60';
 
     const styles = {
-      primary:
-        'border border-[#5a1821] bg-[#5a1821] text-white hover:bg-[#49141b]',
-      outline:
-        'border border-[#d4b28a] bg-white text-[#5a1821] hover:bg-[#fff8f0]',
-      secondary:
-        'border border-[#d7c3a6] bg-[#f7ecdf] text-[#5a1821] hover:bg-[#f3e5d4]',
+      primary: 'border border-[#5a1821] bg-[#5a1821] text-white hover:bg-[#49141b]',
+      outline: 'border border-[#d4b28a] bg-white text-[#5a1821] hover:bg-[#fff8f0]',
+      secondary: 'border border-[#d7c3a6] bg-[#f7ecdf] text-[#5a1821] hover:bg-[#f3e5d4]',
     };
 
     return (
-      <button
-        ref={ref}
-        type={type}
-        className={cn(base, styles[variant], className)}
-        {...props}
-      />
+      <button ref={ref} type={type} className={cn(base, styles[variant], className)} {...props} />
     );
   }
 );
 Button.displayName = 'Button';
 
-export function Badge({
-  className,
-  children,
-  ...props
-}: DivProps) {
-  let tone =
-    'border-[#d7c3a6] bg-[#fbf1e4] text-[#5a1821]';
+export function Badge({ className, children, ...props }: DivProps) {
+  let tone = 'border-[#d7c3a6] bg-[#fbf1e4] text-[#5a1821]';
 
   const label = String(children ?? '').toLowerCase();
 

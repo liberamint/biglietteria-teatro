@@ -319,7 +319,7 @@ export default function AdminPage() {
               <div className="rounded-[26px] border border-[#e0cfb7] bg-white/90 p-3 shadow-[0_12px_24px_rgba(90,24,33,0.10)]">
                 <Image
                   src="/logo-officina.png"
-                  alt="Logo Officina Teatrale"
+                  alt="Logo Officina Teatrale Il Ponte"
                   width={78}
                   height={78}
                   className="h-[64px] w-[64px] object-contain sm:h-[78px] sm:w-[78px]"
@@ -339,7 +339,11 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <h1 className="mt-5 text-3xl font-bold tracking-tight text-[#5a1821] sm:text-5xl">
+            <div className="mt-4 text-sm font-semibold uppercase tracking-[0.22em] text-[#8f7153]">
+              Officina Teatrale Il Ponte
+            </div>
+
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-[#5a1821] sm:text-5xl">
               Area amministratore
             </h1>
 
@@ -465,9 +469,7 @@ export default function AdminPage() {
                       <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
                         <div className="space-y-3">
                           <div className="flex flex-wrap items-center gap-2">
-                            <div className="text-xl font-semibold text-[#5a1821]">
-                              {booking.requester_name}
-                            </div>
+                            <div className="text-xl font-semibold text-[#5a1821]">{booking.requester_name}</div>
                             {booking.confirmed ? <Badge>Confermato</Badge> : null}
                             {booking.paid ? <Badge>Pagato</Badge> : null}
                             {booking.checked_in ? <Badge>Entrato</Badge> : null}
@@ -594,7 +596,7 @@ export default function AdminPage() {
                             <button
                               key={serial.id}
                               type="button"
-                              className="rounded-full border bg-white px-3 py-1 text-sm shadow-sm"
+                              className="rounded-full border bg-white px-3 py-1 text-sm shadow-sm font-bold"
                               onClick={() => freeSerial(serial.id)}
                             >
                               {serial.code}

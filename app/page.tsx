@@ -9,10 +9,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-2 pt-8 sm:pt-12">
           <div className="relative overflow-hidden rounded-[40px] border border-[#d9c3a5] bg-[radial-gradient(circle_at_top,#fff7ef_0%,#faeee2_30%,#ead4c4_68%,#d7b0a7_100%)] shadow-[0_24px_60px_rgba(90,24,33,0.14)]">
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.38)_0%,rgba(255,255,255,0.04)_38%,rgba(90,24,33,0.06)_100%)]" />
-
             <div className="absolute left-0 top-0 h-full w-10 bg-[linear-gradient(180deg,#74202c_0%,#4b141a_100%)] opacity-95 sm:w-16" />
             <div className="absolute right-0 top-0 h-full w-10 bg-[linear-gradient(180deg,#74202c_0%,#4b141a_100%)] opacity-95 sm:w-16" />
-
             <div className="absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.55)_0%,rgba(255,255,255,0)_75%)]" />
 
             <div className="relative px-5 py-8 sm:px-10 sm:py-12">
@@ -26,7 +24,7 @@ export default function HomePage() {
                     <div className="rounded-[30px] border border-[#e0cfb7] bg-white/90 p-3 shadow-[0_12px_30px_rgba(90,24,33,0.10)]">
                       <Image
                         src="/logo-officina.png"
-                        alt="Logo Officina Teatrale"
+                        alt="Logo Officina Teatrale Il Ponte"
                         width={90}
                         height={90}
                         className="h-[72px] w-[72px] object-contain sm:h-[90px] sm:w-[90px]"
@@ -46,7 +44,11 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  <h1 className="mt-6 text-4xl font-bold tracking-tight text-[#5a1821] sm:text-5xl lg:text-6xl">
+                  <div className="mt-4 text-sm font-semibold uppercase tracking-[0.22em] text-[#8f7153]">
+                    Officina Teatrale Il Ponte
+                  </div>
+
+                  <h1 className="mt-4 text-4xl font-bold tracking-tight text-[#5a1821] sm:text-5xl lg:text-6xl">
                     Biglietteria Teatro
                   </h1>
 
@@ -94,9 +96,7 @@ export default function HomePage() {
 
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                           <Link href="/prenota" className="w-full sm:w-auto">
-                            <Button className="w-full sm:min-w-[200px]">
-                              🎟️ Prenota biglietti
-                            </Button>
+                            <Button className="w-full sm:min-w-[200px]">🎟️ Prenota biglietti</Button>
                           </Link>
 
                           <Link href="/admin" className="w-full sm:w-auto">
