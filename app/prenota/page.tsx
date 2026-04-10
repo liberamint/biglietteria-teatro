@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase-browser';
 import { SHOWS, TOTAL_POSTI } from '@/lib/config';
@@ -45,9 +46,9 @@ export default function PrenotaPage() {
   function getBookingTickets(booking: any) {
     const full = Number(booking.full_tickets || 0);
     const reduced = Number(booking.reduced_tickets || 0);
-    const ticketCount = Number(booking.ticket_count || 0);
+    const ticketCountDb = Number(booking.ticket_count || 0);
 
-    const normalizedFull = full === 0 && reduced === 0 ? ticketCount : full;
+    const normalizedFull = full === 0 && reduced === 0 ? ticketCountDb : full;
     const totalTickets = normalizedFull + reduced;
 
     return {
@@ -176,23 +177,52 @@ export default function PrenotaPage() {
   return (
     <PageShell>
       <Container>
-        <div className="mx-auto max-w-4xl px-2 pt-6 sm:pt-10">
+        <div className="relative mx-auto max-w-4xl px-2 pt-6 sm:pt-10">
+          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[280px] rounded-[36px] bg-[radial-gradient(circle_at_top,#7b2430_0%,#5a1821_35%,rgba(90,24,33,0.08)_72%,transparent_100%)] opacity-95" />
+          <div className="pointer-events-none absolute left-0 top-0 -z-10 h-full w-8 rounded-l-[36px] bg-[linear-gradient(180deg,#74202c_0%,#4b141a_100%)] opacity-85 sm:w-12" />
+          <div className="pointer-events-none absolute right-0 top-0 -z-10 h-full w-8 rounded-r-[36px] bg-[linear-gradient(180deg,#74202c_0%,#4b141a_100%)] opacity-85 sm:w-12" />
+
           <div className="mb-8 text-center">
-            <div className="inline-block rounded-full border border-[#d6b892] bg-white/70 px-4 py-1 text-xs uppercase tracking-[0.34em] text-[#8f7153] shadow-sm">
+            <div className="inline-block rounded-full border border-[#d6b892] bg-white/75 px-4 py-1 text-xs uppercase tracking-[0.34em] text-[#8f7153] shadow-sm">
               Prenotazioni
             </div>
 
-            <h1 className="mt-4 text-3xl font-bold tracking-tight text-[#5a1821] sm:text-5xl">
+            <div className="mx-auto mt-5 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-5">
+              <div className="rounded-[26px] border border-[#e0cfb7] bg-white/90 p-3 shadow-[0_12px_24px_rgba(90,24,33,0.10)]">
+                <Image
+                  src="/logo-officina.png"
+                  alt="Logo Officina Teatrale"
+                  width={78}
+                  height={78}
+                  className="h-[64px] w-[64px] object-contain sm:h-[78px] sm:w-[78px]"
+                  priority
+                />
+              </div>
+
+              <div className="rounded-[26px] border border-[#e0cfb7] bg-white/85 p-3 shadow-[0_12px_24px_rgba(90,24,33,0.10)]">
+                <Image
+                  src="/icon.png"
+                  alt="Icona Biglietteria Teatro"
+                  width={88}
+                  height={88}
+                  className="h-[72px] w-[72px] rounded-[18px] object-cover sm:h-[88px] sm:w-[88px]"
+                  priority
+                />
+              </div>
+            </div>
+
+            <h1 className="mt-5 text-3xl font-bold tracking-tight text-[#5a1821] sm:text-5xl">
               Prenota il tuo posto in platea
             </h1>
 
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-[#6d6054] sm:text-base">
-              Un piccolo sipario digitale per organizzare la tua presenza a teatro
-              con chiarezza, eleganza e informazioni sempre aggiornate.
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#6d6054] sm:text-base">
+              Scegli lo spettacolo, inserisci i tuoi dati e invia la richiesta.
+              La conferma del pagamento e i seriali dei biglietti verranno gestiti
+              dall&apos;organizzazione.
             </p>
           </div>
 
-          <Card>
+          <Card className="bg-white/88">
             <CardHeader>
               <CardTitle>Modulo di prenotazione</CardTitle>
             </CardHeader>

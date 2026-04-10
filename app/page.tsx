@@ -22,7 +22,18 @@ export default function HomePage() {
                     Officina Teatrale
                   </div>
 
-                  <div className="mx-auto mt-6 flex justify-center">
+                  <div className="mx-auto mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
+                    <div className="rounded-[30px] border border-[#e0cfb7] bg-white/90 p-3 shadow-[0_12px_30px_rgba(90,24,33,0.10)]">
+                      <Image
+                        src="/logo-officina.png"
+                        alt="Logo Officina Teatrale"
+                        width={90}
+                        height={90}
+                        className="h-[72px] w-[72px] object-contain sm:h-[90px] sm:w-[90px]"
+                        priority
+                      />
+                    </div>
+
                     <div className="rounded-[30px] border border-[#e0cfb7] bg-white/85 p-4 shadow-[0_12px_30px_rgba(90,24,33,0.10)]">
                       <Image
                         src="/icon.png"
