@@ -21,7 +21,7 @@ export default function HomePage() {
                   </div>
 
                   <div className="mx-auto mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
-                    <div className="rounded-[30px] border border-[#e0cfb7] bg-white/90 p-3 shadow-[0_12px_30px_rgba(90,24,33,0.10)]">
+                    <div className="rounded-[30px] border border-[#e0cfb7] bg-white/90 p-3 shadow-[0_12px_30px_rgba(90,24,33,0.10)] transition duration-500 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(90,24,33,0.14)]">
                       <Image
                         src="/logo-officina.png"
                         alt="Logo Officina Teatrale Il Ponte"
@@ -32,7 +32,7 @@ export default function HomePage() {
                       />
                     </div>
 
-                    <div className="rounded-[30px] border border-[#e0cfb7] bg-white/85 p-4 shadow-[0_12px_30px_rgba(90,24,33,0.10)]">
+                    <div className="rounded-[30px] border border-[#e0cfb7] bg-white/85 p-4 shadow-[0_12px_30px_rgba(90,24,33,0.10)] transition duration-500 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(90,24,33,0.14)]">
                       <Image
                         src="/icon.png"
                         alt="Icona Biglietteria Teatro"
@@ -58,7 +58,7 @@ export default function HomePage() {
                     e organizzazione.
                   </p>
 
-                  <div className="mx-auto mt-8 max-w-4xl rounded-[32px] border border-[#e0cfb7] bg-white/72 px-6 py-7 shadow-[0_12px_30px_rgba(90,24,33,0.08)] backdrop-blur">
+                  <div className="mx-auto mt-8 max-w-4xl rounded-[32px] border border-[#e0cfb7] bg-white/72 px-6 py-7 shadow-[0_12px_30px_rgba(90,24,33,0.08)] backdrop-blur transition duration-500 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(90,24,33,0.12)]">
                     <div className="text-3xl leading-none text-[#b08a5d]">“</div>
 
                     <p className="mx-auto mt-2 max-w-3xl text-lg italic leading-9 text-[#5a1821] sm:text-xl sm:leading-10">
@@ -77,7 +77,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="mt-10 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-                  <Card className="bg-white/82">
+                  <Card className="bg-white/82 transition duration-500 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(90,24,33,0.12)]">
                     <CardContent>
                       <div className="rounded-[30px] border border-[#e2d1ba] bg-[linear-gradient(180deg,#fffdf9_0%,#f8efe3_100%)] p-6 shadow-sm sm:p-8">
                         <div className="text-xs uppercase tracking-[0.25em] text-[#927252]">
@@ -107,7 +107,7 @@ export default function HomePage() {
                         </div>
 
                         <div className="mt-8 grid gap-3 sm:grid-cols-3">
-                          <div className="rounded-2xl border border-[#e2d1ba] bg-white/80 px-4 py-4 shadow-sm">
+                          <div className="rounded-2xl border border-[#e2d1ba] bg-white/80 px-4 py-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md">
                             <div className="text-xs uppercase tracking-[0.18em] text-[#927252]">
                               Prenota
                             </div>
@@ -116,7 +116,7 @@ export default function HomePage() {
                             </div>
                           </div>
 
-                          <div className="rounded-2xl border border-[#e2d1ba] bg-white/80 px-4 py-4 shadow-sm">
+                          <div className="rounded-2xl border border-[#e2d1ba] bg-white/80 px-4 py-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md">
                             <div className="text-xs uppercase tracking-[0.18em] text-[#927252]">
                               Controlla
                             </div>
@@ -125,7 +125,7 @@ export default function HomePage() {
                             </div>
                           </div>
 
-                          <div className="rounded-2xl border border-[#e2d1ba] bg-white/80 px-4 py-4 shadow-sm">
+                          <div className="rounded-2xl border border-[#e2d1ba] bg-white/80 px-4 py-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md">
                             <div className="text-xs uppercase tracking-[0.18em] text-[#927252]">
                               Organizza
                             </div>
@@ -139,7 +139,7 @@ export default function HomePage() {
                   </Card>
 
                   <div className="grid gap-6">
-                    <Card className="bg-white/82">
+                    <Card className="bg-white/82 transition duration-500 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(90,24,33,0.12)]">
                       <CardContent>
                         <div className="rounded-[30px] border border-[#e2d1ba] bg-white/75 p-6 shadow-sm">
                           <div className="text-xs uppercase tracking-[0.25em] text-[#927252]">
@@ -148,7 +148,7 @@ export default function HomePage() {
 
                           <div className="mt-4 space-y-3">
                             <Link href="/prenota" className="block">
-                              <div className="rounded-2xl border border-[#dcc7aa] bg-[#fff8f0] px-4 py-4 transition hover:bg-white">
+                              <div className="rounded-2xl border border-[#dcc7aa] bg-[#fff8f0] px-4 py-4 transition duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-md">
                                 <div className="text-base font-semibold text-[#5a1821]">
                                   Prenotazioni
                                 </div>
@@ -159,7 +159,7 @@ export default function HomePage() {
                             </Link>
 
                             <Link href="/admin" className="block">
-                              <div className="rounded-2xl border border-[#dcc7aa] bg-[#fff8f0] px-4 py-4 transition hover:bg-white">
+                              <div className="rounded-2xl border border-[#dcc7aa] bg-[#fff8f0] px-4 py-4 transition duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-md">
                                 <div className="text-base font-semibold text-[#5a1821]">
                                   Gestione amministrativa
                                 </div>
@@ -173,7 +173,7 @@ export default function HomePage() {
                       </CardContent>
                     </Card>
 
-                    <Card className="bg-white/82">
+                    <Card className="bg-white/82 transition duration-500 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(90,24,33,0.12)]">
                       <CardContent>
                         <div className="rounded-[30px] border border-[#e2d1ba] bg-[linear-gradient(180deg,#fffdf9_0%,#f8efe3_100%)] p-6 shadow-sm">
                           <div className="text-xs uppercase tracking-[0.25em] text-[#927252]">
