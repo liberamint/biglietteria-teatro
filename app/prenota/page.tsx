@@ -177,6 +177,12 @@ export default function PrenotaPage() {
     await loadDisponibilita(showSlug);
   }
 
+  const fieldCardClass =
+    'rounded-[24px] border border-[#e2cfb7] bg-[linear-gradient(180deg,#fffdf9_0%,#f7ecdf_100%)] p-4 shadow-[0_16px_28px_rgba(90,24,33,0.10),0_3px_0_rgba(255,255,255,0.65)_inset]';
+
+  const fieldInputClass =
+    'bg-white/95 shadow-[0_10px_18px_rgba(90,24,33,0.08)] border-[#d6b58f]';
+
   return (
     <PageShell>
       <Container>
@@ -339,47 +345,49 @@ export default function PrenotaPage() {
                 </div>
 
                 <div className="grid gap-5 md:grid-cols-2">
-                  <div>
+                  <div className={fieldCardClass}>
                     <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Nome e cognome
                     </label>
                     <Input
+                      className={fieldInputClass}
                       value={requesterName}
                       onChange={(e) => setRequesterName(e.target.value)}
                       required
                     />
                   </div>
 
-                  <div>
+                  <div className={fieldCardClass}>
                     <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Telefono
                     </label>
                     <Input
+                      className={fieldInputClass}
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       required
                     />
                   </div>
 
-                  <div>
+                  <div className={fieldCardClass}>
                     <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Email
                     </label>
                     <Input
+                      className={fieldInputClass}
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                   </div>
-                </div>
 
-                <div className="grid gap-5 md:grid-cols-2">
-                  <div>
+                  <div className={fieldCardClass}>
                     <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Biglietti interi
                     </label>
                     <Input
+                      className={fieldInputClass}
                       type="number"
                       min={0}
                       max={12}
@@ -388,11 +396,12 @@ export default function PrenotaPage() {
                     />
                   </div>
 
-                  <div>
+                  <div className={fieldCardClass}>
                     <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Biglietti ridotti
                     </label>
                     <Input
+                      className={fieldInputClass}
                       type="number"
                       min={0}
                       max={12}
@@ -402,7 +411,7 @@ export default function PrenotaPage() {
                   </div>
                 </div>
 
-                <div className="rounded-3xl border border-[#e0cfb7] bg-white/80 p-5 shadow-sm">
+                <div className="rounded-[24px] border border-[#e2cfb7] bg-[linear-gradient(180deg,#fffdf9_0%,#f7ecdf_100%)] p-5 shadow-[0_18px_30px_rgba(90,24,33,0.10),0_3px_0_rgba(255,255,255,0.65)_inset]">
                   <div className="grid gap-3 md:grid-cols-2">
                     <div>
                       <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
@@ -424,11 +433,12 @@ export default function PrenotaPage() {
                   </div>
                 </div>
 
-                <div>
+                <div className={fieldCardClass}>
                   <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                     Nomi partecipanti
                   </label>
                   <Textarea
+                    className={fieldInputClass}
                     rows={5}
                     value={participantNames}
                     onChange={(e) => setParticipantNames(e.target.value)}
@@ -436,11 +446,12 @@ export default function PrenotaPage() {
                   />
                 </div>
 
-                <div>
+                <div className={fieldCardClass}>
                   <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                     Note
                   </label>
                   <Textarea
+                    className={fieldInputClass}
                     rows={3}
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
