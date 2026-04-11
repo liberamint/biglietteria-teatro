@@ -464,20 +464,32 @@ export default function PrenotaPage() {
                   pagamento e i seriali dei biglietti vengono inseriti solo dall&apos;organizzazione.
                 </div>
 
-                <Button
-                  onClick={submitBooking}
-                  disabled={
-                    busy ||
-                    !requesterName ||
-                    !phone ||
-                    !email ||
-                    ticketCount <= 0 ||
-                    ticketCount > postiRimastiSeConfermati
-                  }
-                  className="w-full"
-                >
-                  {busy ? 'Invio...' : 'Invia richiesta'}
-                </Button>
+                <div className="relative">
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden rounded-[32px]">
+                    <div className="select-none text-[90px] font-black leading-none text-white/10 blur-[1px] sm:text-[120px]">
+                      🎭
+                    </div>
+                  </div>
+
+                  <div className="pointer-events-none absolute -bottom-3 left-1/2 h-8 w-[82%] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(90,24,33,0.22)_0%,rgba(90,24,33,0.08)_45%,rgba(90,24,33,0)_75%)] blur-md" />
+
+                  <Button
+                    onClick={submitBooking}
+                    disabled={
+                      busy ||
+                      !requesterName ||
+                      !phone ||
+                      !email ||
+                      ticketCount <= 0 ||
+                      ticketCount > postiRimastiSeConfermati
+                    }
+                    className="relative w-full rounded-[28px] border-[#4b141a] bg-[linear-gradient(180deg,#6e1e2a_0%,#5a1821_55%,#4b141a_100%)] py-4 text-base shadow-[0_18px_28px_rgba(90,24,33,0.24),0_3px_0_rgba(255,255,255,0.10)_inset] hover:translate-y-[1px] hover:bg-[linear-gradient(180deg,#6e1e2a_0%,#56171f_55%,#431217_100%)]"
+                  >
+                    <span className="relative z-10 tracking-[0.04em]">
+                      {busy ? 'Invio...' : 'Invia richiesta'}
+                    </span>
+                  </Button>
+                </div>
 
                 {message ? (
                   <div className="rounded-2xl border border-[#dcc6a7] bg-white/85 px-4 py-3 text-sm text-[#5a1821] shadow-sm">
