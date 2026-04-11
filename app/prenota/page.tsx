@@ -13,7 +13,6 @@ import {
   CardContent,
   Input,
   Textarea,
-  Button,
 } from '@/components/ui';
 
 export default function PrenotaPage() {
@@ -182,6 +181,14 @@ export default function PrenotaPage() {
 
   const fieldInputClass =
     'bg-white/95 shadow-[0_10px_18px_rgba(90,24,33,0.08)] border-[#d6b58f]';
+
+  const buttonDisabled =
+    busy ||
+    !requesterName ||
+    !phone ||
+    !email ||
+    ticketCount <= 0 ||
+    ticketCount > postiRimastiSeConfermati;
 
   return (
     <PageShell>
@@ -473,22 +480,31 @@ export default function PrenotaPage() {
 
                   <div className="pointer-events-none absolute -bottom-3 left-1/2 h-8 w-[82%] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(90,24,33,0.22)_0%,rgba(90,24,33,0.08)_45%,rgba(90,24,33,0)_75%)] blur-md" />
 
-                  <Button
+                  <button
+                    type="button"
                     onClick={submitBooking}
-                    disabled={
-                      busy ||
-                      !requesterName ||
-                      !phone ||
-                      !email ||
-                      ticketCount <= 0 ||
-                      ticketCount > postiRimastiSeConfermati
-                    }
-                    className="relative w-full rounded-[28px] border-[#4b141a] bg-[linear-gradient(180deg,#6e1e2a_0%,#5a1821_55%,#4b141a_100%)] py-4 text-base shadow-[0_18px_28px_rgba(90,24,33,0.24),0_3px_0_rgba(255,255,255,0.10)_inset] hover:translate-y-[1px] hover:bg-[linear-gradient(180deg,#6e1e2a_0%,#56171f_55%,#431217_100%)]"
+                    disabled={buttonDisabled}
+                    className="relative w-full overflow-hidden rounded-[30px] px-6 py-4 text-base font-bold tracking-[0.04em] text-white transition duration-200 hover:translate-y-[1px] disabled:cursor-not-allowed disabled:opacity-60"
+                    style={{
+                      background:
+                        'linear-gradient(180deg, #7a2430 0%, #5a1821 55%, #451218 100%)',
+                      boxShadow:
+                        '0 18px 28px rgba(90,24,33,0.24), inset 0 3px 0 rgba(255,255,255,0.12)',
+                    }}
                   >
-                    <span className="relative z-10 tracking-[0.04em]">
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 flex items-center justify-center text-[88px] opacity-[0.10] blur-[0.4px] sm:text-[110px]"
+                    >
+                      🎭
+                    </span>
+
+                    <span className="pointer-events-none absolute inset-x-0 top-0 h-[45%] bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0)_100%)]" />
+
+                    <span className="relative z-10">
                       {busy ? 'Invio...' : 'Invia richiesta'}
                     </span>
-                  </Button>
+                  </button>
                 </div>
 
                 {message ? (
