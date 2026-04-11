@@ -252,16 +252,24 @@ export default function PrenotaPage() {
                   </select>
 
                   <div className="mt-5 grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-                    <div className="rounded-3xl border border-[#e0cfb7] bg-white/88 p-3 shadow-sm">
-                      <div className="relative overflow-hidden rounded-[22px] border border-[#eadcc9] bg-[#fffaf4]">
-                        <Image
-                          src={posterSrc}
-                          alt={`Locandina ${selectedShow?.name || ''}`}
-                          width={900}
-                          height={1350}
-                          className="h-auto w-full object-cover"
-                          priority
-                        />
+                    <div className="rounded-[30px] border border-[#d9c3a5] bg-[linear-gradient(180deg,#fffdf9_0%,#f8ecde_100%)] p-4 shadow-[0_12px_30px_rgba(90,24,33,0.10)]">
+                      <div className="rounded-[26px] border border-[#eadcc9] bg-white/90 p-3 shadow-inner">
+                        <div className="rounded-[20px] border border-[#e6d3ba] bg-[#fffaf4] p-2">
+                          <div className="relative overflow-hidden rounded-[14px] border border-[#e9dcca] bg-white">
+                            <Image
+                              src={posterSrc}
+                              alt={`Locandina ${selectedShow?.name || ''}`}
+                              width={900}
+                              height={1350}
+                              className="h-auto w-full object-cover"
+                              priority
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 text-center text-xs uppercase tracking-[0.22em] text-[#927252]">
+                        Locandina spettacolo
                       </div>
                     </div>
 
