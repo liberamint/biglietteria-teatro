@@ -255,13 +255,17 @@ export default function PrenotaPage() {
                     <div className="rounded-[30px] border border-[#d9c3a5] bg-[linear-gradient(180deg,#fffdf9_0%,#f8ecde_100%)] p-4 shadow-[0_12px_30px_rgba(90,24,33,0.10)]">
                       <div className="rounded-[26px] border border-[#eadcc9] bg-white/90 p-3 shadow-inner">
                         <div className="rounded-[20px] border border-[#e6d3ba] bg-[#fffaf4] p-2">
-                          <div className="relative overflow-hidden rounded-[14px] border border-[#e9dcca] bg-white">
+                          <div
+                            key={posterSrc}
+                            className="relative overflow-hidden rounded-[14px] border border-[#e9dcca] bg-white"
+                            style={{ animation: 'posterReveal 420ms ease' }}
+                          >
                             <Image
                               src={posterSrc}
                               alt={`Locandina ${selectedShow?.name || ''}`}
                               width={900}
                               height={1350}
-                              className="h-auto w-full object-cover"
+                              className="h-auto w-full object-cover transition-transform duration-700 hover:scale-[1.02]"
                               priority
                             />
                           </div>
@@ -473,6 +477,19 @@ export default function PrenotaPage() {
             </CardContent>
           </Card>
         </div>
+
+        <style jsx>{`
+          @keyframes posterReveal {
+            0% {
+              opacity: 0;
+              transform: scale(1.035);
+            }
+            100% {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+        `}</style>
       </Container>
     </PageShell>
   );
