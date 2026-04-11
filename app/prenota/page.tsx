@@ -163,7 +163,9 @@ export default function PrenotaPage() {
       return;
     }
 
-    setMessage("Richiesta inviata. Pagamento e seriali saranno confermati solo dall'organizzazione.");
+    setMessage(
+      "Richiesta inviata con successo. La prenotazione è stata registrata. Il pagamento e i seriali dei biglietti verranno confermati dall'organizzazione."
+    );
     setRequesterName('');
     setPhone('');
     setEmail('');
@@ -508,8 +510,21 @@ export default function PrenotaPage() {
                 </div>
 
                 {message ? (
-                  <div className="rounded-2xl border border-[#dcc6a7] bg-white/85 px-4 py-3 text-sm text-[#5a1821] shadow-sm">
-                    {message}
+                  <div className="relative overflow-hidden rounded-[28px] border border-[#d8c2a5] bg-[linear-gradient(180deg,#fffdf9_0%,#f6eadb_100%)] px-5 py-5 text-sm text-[#5a1821] shadow-[0_16px_28px_rgba(90,24,33,0.10)]">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 w-3 bg-[linear-gradient(180deg,#7a2430_0%,#5a1821_100%)]" />
+                    <div className="pointer-events-none absolute right-4 top-3 text-4xl text-[#b08a5d]/25">
+                      🎭
+                    </div>
+
+                    <div className="pl-3">
+                      <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#927252]">
+                        Cartiglio di conferma
+                      </div>
+                      <div className="mt-2 text-base font-semibold text-[#5a1821]">
+                        Richiesta registrata
+                      </div>
+                      <p className="mt-2 leading-7 text-[#6d6054]">{message}</p>
+                    </div>
                   </div>
                 ) : null}
               </div>
