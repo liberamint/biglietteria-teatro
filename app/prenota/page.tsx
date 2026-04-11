@@ -37,6 +37,7 @@ export default function PrenotaPage() {
   const selectedShow = SHOWS.find((s) => s.slug === showSlug);
   const prezzoIntero = Number(selectedShow?.price_full || 10);
   const prezzoRidotto = Number(selectedShow?.price_reduced || 8);
+  const posterSrc = `/locandine/${showSlug}.jpg`;
 
   const ticketCount = Number(fullTickets || 0) + Number(reducedTickets || 0);
   const totaleStimato =
@@ -92,8 +93,10 @@ export default function PrenotaPage() {
       .filter((b: any) => b.paid)
       .reduce((sum: number, booking: any) => sum + getBookingTickets(booking).totalTickets, 0);
 
-    const bigliettiPrenotatiTotali = allBookings
-      .reduce((sum: number, booking: any) => sum + getBookingTickets(booking).totalTickets, 0);
+    const bigliettiPrenotatiTotali = allBookings.reduce(
+      (sum: number, booking: any) => sum + getBookingTickets(booking).totalTickets,
+      0
+    );
 
     setPostiRimastiReali(Math.max(TOTAL_POSTI - bigliettiPagati, 0));
     setPostiRimastiSeConfermati(Math.max(TOTAL_POSTI - bigliettiPrenotatiTotali, 0));
@@ -177,7 +180,7 @@ export default function PrenotaPage() {
   return (
     <PageShell>
       <Container>
-        <div className="relative mx-auto max-w-4xl px-2 pt-6 sm:pt-10">
+        <div className="relative mx-auto max-w-5xl px-2 pt-6 sm:pt-10">
           <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[280px] rounded-[36px] bg-[radial-gradient(circle_at_top,#7b2430_0%,#5a1821_35%,rgba(90,24,33,0.08)_72%,transparent_100%)] opacity-95" />
           <div className="pointer-events-none absolute left-0 top-0 -z-10 h-full w-8 rounded-l-[36px] bg-[linear-gradient(180deg,#74202c_0%,#4b141a_100%)] opacity-85 sm:w-12" />
           <div className="pointer-events-none absolute right-0 top-0 -z-10 h-full w-8 rounded-r-[36px] bg-[linear-gradient(180deg,#74202c_0%,#4b141a_100%)] opacity-85 sm:w-12" />
@@ -248,60 +251,77 @@ export default function PrenotaPage() {
                     ))}
                   </select>
 
-                  <div className="mt-4 rounded-3xl border border-[#e0cfb7] bg-white/85 p-5 shadow-sm">
-                    <div className="text-lg font-semibold text-[#5a1821]">{selectedShow?.name}</div>
-
-                    <div className="mt-3 text-sm text-[#61564c]">
-                      📅{' '}
-                      {new Date(selectedShow?.datetime || '').toLocaleDateString('it-IT', {
-                        weekday: 'long',
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric',
-                      })}{' '}
-                      • 🕒 ore{' '}
-                      {new Date(selectedShow?.datetime || '').toLocaleTimeString('it-IT', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </div>
-
-                    <div className="mt-3 text-sm font-medium text-[#5a1821]">
-                      💶 Intero: €{selectedShow?.price_full} • Ridotto: €{selectedShow?.price_reduced}
-                    </div>
-
-                    <div className="mt-2 text-xs text-[#7a6c5f]">
-                      Ridotto valido per bambini fino a 6 anni o per chi assiste a più spettacoli.
-                    </div>
-
-                    <div className="mt-4 grid gap-3 md:grid-cols-2">
-                      <div className="rounded-2xl border border-[#d6c0a0] bg-[#fff7ee] px-4 py-3 text-sm">
-                        <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
-                          Disponibilità reale
-                        </div>
-                        <div className="mt-1 text-2xl font-bold text-[#5a1821]">
-                          {loadingPosti ? '...' : postiRimastiReali}
-                        </div>
-                        <div className="mt-1 text-xs text-[#74675c]">
-                          Considera solo i biglietti già pagati
-                        </div>
-                      </div>
-
-                      <div className="rounded-2xl border border-[#d6c0a0] bg-[#fff7ee] px-4 py-3 text-sm">
-                        <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
-                          Disponibilità potenziale
-                        </div>
-                        <div className="mt-1 text-2xl font-bold text-[#5a1821]">
-                          {loadingPosti ? '...' : postiRimastiSeConfermati}
-                        </div>
-                        <div className="mt-1 text-xs text-[#74675c]">
-                          Se tutte le prenotazioni venissero confermate
-                        </div>
+                  <div className="mt-5 grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
+                    <div className="rounded-3xl border border-[#e0cfb7] bg-white/88 p-3 shadow-sm">
+                      <div className="relative overflow-hidden rounded-[22px] border border-[#eadcc9] bg-[#fffaf4]">
+                        <Image
+                          src={posterSrc}
+                          alt={`Locandina ${selectedShow?.name || ''}`}
+                          width={900}
+                          height={1350}
+                          className="h-auto w-full object-cover"
+                          priority
+                        />
                       </div>
                     </div>
 
-                    <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">
-                      ⚠️ Da pagare in Officina entro 10 giorni dalla prenotazione, pena decadimento della stessa.
+                    <div className="rounded-3xl border border-[#e0cfb7] bg-white/85 p-5 shadow-sm">
+                      <div className="text-lg font-semibold text-[#5a1821]">
+                        {selectedShow?.name}
+                      </div>
+
+                      <div className="mt-3 text-sm text-[#61564c]">
+                        📅{' '}
+                        {new Date(selectedShow?.datetime || '').toLocaleDateString('it-IT', {
+                          weekday: 'long',
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric',
+                        })}{' '}
+                        • 🕒 ore{' '}
+                        {new Date(selectedShow?.datetime || '').toLocaleTimeString('it-IT', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </div>
+
+                      <div className="mt-3 text-sm font-medium text-[#5a1821]">
+                        💶 Intero: €{selectedShow?.price_full} • Ridotto: €{selectedShow?.price_reduced}
+                      </div>
+
+                      <div className="mt-2 text-xs text-[#7a6c5f]">
+                        Ridotto valido per bambini fino a 6 anni o per chi assiste a più spettacoli.
+                      </div>
+
+                      <div className="mt-4 grid gap-3">
+                        <div className="rounded-2xl border border-[#d6c0a0] bg-[#fff7ee] px-4 py-3 text-sm">
+                          <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
+                            Disponibilità reale
+                          </div>
+                          <div className="mt-1 text-2xl font-bold text-[#5a1821]">
+                            {loadingPosti ? '...' : postiRimastiReali}
+                          </div>
+                          <div className="mt-1 text-xs text-[#74675c]">
+                            Considera solo i biglietti già pagati
+                          </div>
+                        </div>
+
+                        <div className="rounded-2xl border border-[#d6c0a0] bg-[#fff7ee] px-4 py-3 text-sm">
+                          <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
+                            Disponibilità potenziale
+                          </div>
+                          <div className="mt-1 text-2xl font-bold text-[#5a1821]">
+                            {loadingPosti ? '...' : postiRimastiSeConfermati}
+                          </div>
+                          <div className="mt-1 text-xs text-[#74675c]">
+                            Se tutte le prenotazioni venissero confermate
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700">
+                        ⚠️ Da pagare in Officina entro 10 giorni dalla prenotazione, pena decadimento della stessa.
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -311,21 +331,34 @@ export default function PrenotaPage() {
                     <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Nome e cognome
                     </label>
-                    <Input value={requesterName} onChange={(e) => setRequesterName(e.target.value)} required />
+                    <Input
+                      value={requesterName}
+                      onChange={(e) => setRequesterName(e.target.value)}
+                      required
+                    />
                   </div>
 
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Telefono
                     </label>
-                    <Input value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                    <Input
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      required
+                    />
                   </div>
 
                   <div>
                     <label className="mb-2 block text-sm font-medium text-[#5a1821]">
                       Email
                     </label>
-                    <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
 
@@ -363,14 +396,18 @@ export default function PrenotaPage() {
                       <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
                         Biglietti richiesti
                       </div>
-                      <div className="mt-1 text-3xl font-bold text-[#5a1821]">{ticketCount}</div>
+                      <div className="mt-1 text-3xl font-bold text-[#5a1821]">
+                        {ticketCount}
+                      </div>
                     </div>
 
                     <div>
                       <div className="text-xs uppercase tracking-[0.2em] text-[#927252]">
                         Totale da corrispondere
                       </div>
-                      <div className="mt-1 text-3xl font-bold text-[#5a1821]">€{totaleStimato}</div>
+                      <div className="mt-1 text-3xl font-bold text-[#5a1821]">
+                        €{totaleStimato}
+                      </div>
                     </div>
                   </div>
                 </div>
