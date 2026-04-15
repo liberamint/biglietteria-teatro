@@ -251,6 +251,12 @@ export default function PrenotaPage() {
 
             <CardContent>
               <div className="space-y-6">
+                {postiRimastiSeConfermati === 0 && (
+                  <div className="mb-4 rounded-2xl border border-red-300 bg-red-600 px-4 py-4 text-center text-lg font-bold tracking-wider text-white shadow-lg">
+                    🎭 SOLD OUT – POSTI ESAURITI 🎭
+                  </div>
+                )}
+
                 <div className="rounded-[28px] border border-[#dbc3a4] bg-[linear-gradient(180deg,#fffaf4_0%,#f8ecde_100%)] p-5 shadow-sm">
                   <label className="text-sm font-medium text-[#5a1821]">Spettacolo</label>
 
@@ -275,6 +281,14 @@ export default function PrenotaPage() {
                             className="relative overflow-hidden rounded-[14px] border border-[#e9dcca] bg-white"
                             style={{ animation: 'posterReveal 420ms ease' }}
                           >
+                            {postiRimastiSeConfermati === 0 && (
+                              <div className="absolute inset-0 z-20 flex items-center justify-center">
+                                <div className="rotate-[-18deg] bg-red-700/90 px-8 py-3 text-xl font-bold tracking-widest text-white shadow-lg">
+                                  SOLD OUT
+                                </div>
+                              </div>
+                            )}
+
                             <Image
                               src={posterSrc}
                               alt={`Locandina ${selectedShow?.name || ''}`}
