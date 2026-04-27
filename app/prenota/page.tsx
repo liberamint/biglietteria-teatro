@@ -413,7 +413,7 @@ export default function PrenotaPage() {
                       className={fieldInputClass}
                       type="number"
                       min={0}
-                      max={12}
+                      max={188}
                       value={fullTickets}
                       onChange={(e) => setFullTickets(Number(e.target.value))}
                     />
@@ -427,7 +427,7 @@ export default function PrenotaPage() {
                       className={fieldInputClass}
                       type="number"
                       min={0}
-                      max={12}
+                      max={188}
                       value={reducedTickets}
                       onChange={(e) => setReducedTickets(Number(e.target.value))}
                     />
